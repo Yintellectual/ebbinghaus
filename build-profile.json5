@@ -1,0 +1,55 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\yuchen\\.ohos\\config\\default_ebbinghaus2_dkD12Z5WeqSUUo7fsrMenWeryyf1haupOb_TwckgGOo=.cer",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BE46F8CEA079CB3D1915C107189388421DA5A6F55AD5960BC49DF571C7562F538EF2E84DE30C61D",
+          "profile": "C:\\Users\\yuchen\\.ohos\\config\\default_ebbinghaus2_dkD12Z5WeqSUUo7fsrMenWeryyf1haupOb_TwckgGOo=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\yuchen\\.ohos\\config\\default_ebbinghaus2_dkD12Z5WeqSUUo7fsrMenWeryyf1haupOb_TwckgGOo=.p12",
+          "storePassword": "0000001B0E398BD13C4424653270B68CDA2314B26A3B0EC5F0A92DE3F802DFE3F2440BD256B3E7F4C3EC09"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}
