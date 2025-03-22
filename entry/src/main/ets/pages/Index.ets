@@ -24,6 +24,8 @@ struct Index {
           this.message += "!";
           hilog.info(DOMAIN, TAG, FORMAT, typeof KVManagerSingletonWrapper.getKVManager())
           hilog.info(DOMAIN, TAG, FORMAT, typeof SampleKVService.getInstance())
+          SampleKVService.getInstance().put("testkey", this.message)
+          SampleKVService.getInstance().get("testkey")
         })
         .backgroundColor(Color.Gray)
     }

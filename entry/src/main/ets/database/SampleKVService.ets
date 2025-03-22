@@ -48,4 +48,34 @@ export class SampleKVService {
       hilog.error(DOMAIN, TAG, FORMAT, `An unexpected error occurred. Code:${error.code},message:${error.message}`);
     }
   }
+
+  public put(key:string, value:string){
+    try {
+      this.kvStore?.put(key, value, (err) => {
+        if (err !== undefined) {
+          hilog.error(DOMAIN, TAG, FORMAT,`Failed to put data. Code:${err.code},message:${err.message}`);
+          return;
+        }
+        hilog.info(DOMAIN, TAG, FORMAT,'Succeeded in putting data.');
+      });
+    } catch (e) {
+      let error = e as BusinessError;
+      hilog.error(DOMAIN, TAG, FORMAT,`An unexpected error occurred. Code:${error.code},message:${error.message}`);
+    }
+  }
+
+  public get(key:string){
+    try {
+      this.kvStore?.get(key, (err, data) => {
+        if (err != undefined) {
+          hilog.error(DOMAIN, TAG, FORMAT,`Failed to get data. Code:${err.code},message:${err.message}`);
+          return;
+        }
+        hilog.info(DOMAIN, TAG, FORMAT,`Succeeded in getting data. Data:${data}`);
+      });
+    } catch (e) {
+      let error = e as BusinessError;
+      hilog.error(DOMAIN, TAG, FORMAT,`Failed to get data. Code:${error.code},message:${error.message}`);
+    }
+  }
 }
