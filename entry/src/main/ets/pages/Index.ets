@@ -1,4 +1,4 @@
-import {KVManagerSingletonHolder} from '../entryability/EntryAbility'
+import {KVManagerSingletonWrapper} from '../database/KVManagerSingletonWrapper'
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
@@ -21,7 +21,7 @@ struct Index {
         })
         .onClick(() => {
           this.message += "!";
-          hilog.info(DOMAIN, TAG, FORMAT, typeof KVManagerSingletonHolder.kvManager)
+          hilog.info(DOMAIN, TAG, FORMAT, typeof KVManagerSingletonWrapper.getKVManager())
         })
         .backgroundColor(Color.Gray)
     }
