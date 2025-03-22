@@ -1,7 +1,7 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { window } from '@kit.ArkUI';
 import {KVManagerSingletonWrapper} from '../database/KVManagerSingletonWrapper'
-
+import {SampleKVService} from '../database/SampleKVService'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
 const TAG = "KVManager"
@@ -12,6 +12,7 @@ export default class EntryAbility extends UIAbility {
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
     hilog.info(DOMAIN, TAG, FORMAT, 'Ability onCreate');
     KVManagerSingletonWrapper.init(this.context)
+    SampleKVService.getInstance().init()
   }
 
   onDestroy(): void {

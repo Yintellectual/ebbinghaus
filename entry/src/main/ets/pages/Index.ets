@@ -1,4 +1,5 @@
 import {KVManagerSingletonWrapper} from '../database/KVManagerSingletonWrapper'
+import {SampleKVService} from '../database/SampleKVService'
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
@@ -22,6 +23,7 @@ struct Index {
         .onClick(() => {
           this.message += "!";
           hilog.info(DOMAIN, TAG, FORMAT, typeof KVManagerSingletonWrapper.getKVManager())
+          hilog.info(DOMAIN, TAG, FORMAT, typeof SampleKVService.getInstance())
         })
         .backgroundColor(Color.Gray)
     }
