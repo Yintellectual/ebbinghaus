@@ -34,6 +34,15 @@
         ]
       }
     ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.READ_IMAGEVIDEO",
+        "reason": "$string:reason_permission_read_image_video",
+        "usedScene": {
+          "when": "inuse"
+        }
+      }
+    ],
     "extensionAbilities": [
       {
         "name": "EntryBackupAbility",
