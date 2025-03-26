@@ -1,12 +1,13 @@
 import { relationalStore} from '@kit.ArkData'; // 导入模块
 import { Context } from '@ohos.arkui.UIContext';
-
+import {Memory} from '../entities/Memory'
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
 const TAG = "rdb"
 const FORMAT = '%{public}s'
 function log(message:string, err?:BusinessError){
+
   if(err){
     hilog.error(DOMAIN, TAG, FORMAT, `Code: ${err.code}, Message:${message},\n${err.message}`)
   }else{
@@ -14,8 +15,12 @@ function log(message:string, err?:BusinessError){
   }
 }
 
+const DB_NAME = 'memories.db';
+const MEMORY_TABLE = 'MEMORY';
+const IMAGE_TABLE = 'MEMORY_IMAGE';
+
 const STORE_CONFIG :relationalStore.StoreConfig= {
-  name: 'Memory.db', // 数据库文件名
+  name: DB_NAME, // 数据库文件名
   securityLevel: relationalStore.SecurityLevel.S1, // 数据库安全级别
   encrypt: false, // 可选参数，指定数据库是否加密，默认不加密
   isReadOnly: false // 可选参数，指定数据库是否以只读方式打开。该参数默认为false，表示数据库可读可写。该参数为true时，只允许从数据库读取数据，不允许对数据库进行写操作，否则会返回错误码801。
@@ -31,15 +36,123 @@ export class MemoryManager{
   }
   private constructor() {
   }
-  public init(context: Context){
-     relationalStore.getRdbStore(context, STORE_CONFIG, (err, store)=>{
-       if(err){
-         log("", err)
-         return
-       }
-       log("Succeeded in getting RdbStore")
+  private rdbStore: relationalStore.RdbStore | null = null
+  public async init(context: Context){
+    try {
+      this.rdbStore = await relationalStore.getRdbStore(context, STORE_CONFIG);
 
-     })
+      await this.rdbStore.executeSql(
+        `CREATE TABLE IF NOT EXISTS ${MEMORY_TABLE} (
+          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+          NAME TEXT NOT NULL,
+          DATE INTEGER,
+          DESCRIPTION TEXT,
+          IS_ENABLED INTEGER)`
+      );
+
+      await this.rdbStore.executeSql(
+        `CREATE TABLE IF NOT EXISTS ${IMAGE_TABLE} (
+          ID INTEGER PRIMARY KEY AUTOINCREMENT,
+          MEMORY_ID INTEGER,
+          IMAGE_URI TEXT)`
+      );
+
+      await this.rdbStore.executeSql(
+        'CREATE INDEX IF NOT EXISTS IDX_MEMORY_DATE ON MEMORY(DATE)'
+      );
+      log(`Succeeded in getting RdbStore::${DB_NAME}`)
+      log(`RdbStore version == ${this.rdbStore.version}`)
+    } catch (err) {
+      log("Database init failed:", err)
+    }
   }
 
+  public async addMemory(memory: Memory){
+    if (!this.rdbStore){
+      log('rdbStore not found')
+      return -1
+    }
+    log("add memory: " + memory.IMAGES[0])
+    const valueBucket: relationalStore.ValuesBucket = {
+      'NAME': memory.NAME,
+      'DATE': memory.DATE,
+      'DESCRIPTION': memory.DESCRIPTION,
+      'IS_ENABLED': memory.IS_ENABLED ? 1 : 0
+    };
+    let transaction_id: number | undefined
+    log("before transaction")
+    try {
+      await this.rdbStore.beginTransaction()
+      //transaction_id = await this.rdbStore.beginTrans();
+      log("transaction id: "+ transaction_id)
+      const insertId = await this.rdbStore.insert(MEMORY_TABLE, valueBucket);
+
+      for (const imageUri of memory.IMAGES) {
+        const imageBucket: relationalStore.ValuesBucket = {
+          'MEMORY_ID': insertId,
+          'IMAGE_URI': imageUri
+        };
+        await this.rdbStore.insert(IMAGE_TABLE, imageBucket);
+      }
+
+      await this.rdbStore.commit();
+      log(`Successfully inserted memory with id: ${insertId}}`)
+      return insertId;
+    } catch (err) {
+      log(`Add memory failed: ${(err as BusinessError).message}`, err);
+      //await this.rdbStore.rollback(transaction_id);
+      //log(`Add memory failed, but rolled back: `+ transaction_id)
+      return -1;
+    }
+  }
+  async getMemoriesByDate(start: number, end: number): Promise<Memory[]> {
+    if (!this.rdbStore) return [];
+
+    const predicates = new relationalStore.RdbPredicates(MEMORY_TABLE);
+    predicates.between('DATE', start, end).orderByAsc('DATE');
+
+    try {
+      const memories: Memory[] = [];
+      const resultSet = await this.rdbStore.query(predicates,
+        ['ID', 'NAME', 'DATE', 'DESCRIPTION', 'IS_ENABLED']);
+
+      while (resultSet.goToNextRow()) {
+        const memory = new Memory()
+        memory.ID = resultSet.getDouble(resultSet.getColumnIndex('ID'));
+        memory.NAME = resultSet.getString(resultSet.getColumnIndex('NAME'));
+        memory.DATE = resultSet.getDouble(resultSet.getColumnIndex('DATE'));
+        memory.DESCRIPTION = resultSet.getString(resultSet.getColumnIndex('DESCRIPTION'));
+        memory.IS_ENABLED = resultSet.getDouble(resultSet.getColumnIndex('IS_ENABLED')) === 1;
+
+
+        const imagePredicates = new relationalStore.RdbPredicates(IMAGE_TABLE)
+          .equalTo('MEMORY_ID', memory.ID);
+        const imageResult = await this.rdbStore.query(imagePredicates, ['IMAGE_URI']);
+
+        while (imageResult.goToNextRow()) {
+          memory.IMAGES.push(imageResult.getString(imageResult.getColumnIndex('IMAGE_URI')));
+          log(imageResult.getString(imageResult.getColumnIndex('IMAGE_URI')))
+        }
+        imageResult.close();
+        memories.push(memory);
+        log(`${memory}`)
+      }
+      resultSet.close();
+      log(`Found ${memories.length} memories`)
+      return memories;
+    } catch (err) {
+      log(`Query failed: ${(err as BusinessError).message}`, err);
+      return [];
+    }
+  }
+
+  public destroy(context: Context){
+    relationalStore.deleteRdbStore(context, 'RdbTest.db', (err: BusinessError) => {
+      if (err) {
+        log(`Failed to delete RdbStore:${DB_NAME}`, err);
+        return;
+      }
+      log(`Succeeded in deleting RdbStore:${DB_NAME}`);
+    });
+  }
 }

@@ -7,11 +7,11 @@
         "material": {
           "certpath": "C:\\Users\\yuchen\\.ohos\\config\\default_ebbinghaus2_dkD12Z5WeqSUUo7fsrMenWeryyf1haupOb_TwckgGOo=.cer",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B7582064516E7DFA273F04F2E11FDD7F4E80AB9A3502A3031C2D6E19F792034C6F77B2D8BA7B0D0",
+          "keyPassword": "0000001BEE6B3E8A794C5E3A86FE096B8020B43C8FBC4EEFD15B1EB8D5F5D794FF60753E79BCF4B3D0B690",
           "profile": "C:\\Users\\yuchen\\.ohos\\config\\default_ebbinghaus2_dkD12Z5WeqSUUo7fsrMenWeryyf1haupOb_TwckgGOo=.p7b",
           "signAlg": "SHA256withECDSA",
           "storeFile": "C:\\Users\\yuchen\\.ohos\\config\\default_ebbinghaus2_dkD12Z5WeqSUUo7fsrMenWeryyf1haupOb_TwckgGOo=.p12",
-          "storePassword": "0000001BEE251E9EFEAB8FF7201AC48258DDB22569E1C9B961688E820D48DBA2DA0776286D3B7D7F1DAE16"
+          "storePassword": "0000001B9FB65433406EDDF8559C4BF8A6000FA99A7DBC37ABA0CA77C6C2B4E16BBD14A027453DC2A55B09"
         }
       }
     ],

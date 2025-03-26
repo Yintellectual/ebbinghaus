@@ -14,7 +14,11 @@
     },
     {
       "name": "reason_permission_read_image_video",
-      "value": "Images to remember"
+      "value": "to store images locally"
+    },
+    {
+      "name": "reason_permission_distributed_data",
+      "value": "to store data locally"
     }
   ]
 }

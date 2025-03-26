@@ -6,8 +6,10 @@ import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import {fetchMediaExample} from '../media/MediaDataHandler'
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
+import { MemoryManager} from '../database/MemoryManager';
+import {Memory} from '../entities/Memory'
 const DOMAIN = 0x0000;
-const TAG = "KVManager"
+const TAG = "rdb"
 const FORMAT = '%{public}s'
 
 const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
@@ -36,8 +38,31 @@ function pick_pictures(): Promise<Array<string>> {
 struct Index {
   @State message: string = 'Hello World';
   @State uri: string = "";
+  @State memory: Memory|null = null
+  @State memories: Memory[] = []
   build() {
     RelativeContainer() {
+      Button("Display")
+        .alignRules({
+          center: { anchor: '__container__', align: VerticalAlign.Center },
+        })
+        .onClick(async () =>{
+          this.message += "?"
+          fetchMediaExample(this.uri)
+          if(this.memory){
+            MemoryManager.getInstance().addMemory(this.memory)
+          }
+        })
+      Button("Find All")
+        .alignRules({
+          middle: { anchor: '__container__', align: HorizontalAlign.Center }
+        })
+        .onClick(async ()=>{
+          if(this.memory){
+            this.memories = await MemoryManager.getInstance().getMemoriesByDate(0, Date.now())
+            this.message = this.memories.length + ""
+          }
+        })
       Text(this.message )
         .id('HelloWorld')
         .fontSize($r('app.float.page_text_font_size'))
@@ -55,14 +80,18 @@ struct Index {
           let uris:Array<string> = await pick_pictures()
           hilog.info(DOMAIN, TAG, FORMAT, "what then?")
           this.uri = uris[0]
-
+          hilog.info(DOMAIN, TAG, FORMAT, "what then1?")
+          this.memory = new Memory()
+          this.memory.NAME = "temp"
+          this.memory.DATE = Date.now()
+          this.memory.DESCRIPTION = "description"
+          hilog.info(DOMAIN, TAG, FORMAT, "what then2?")
+          this.memory.IMAGES = uris
+          hilog.info(DOMAIN, TAG, FORMAT, "what then?3")
+          let id = await MemoryManager.getInstance().addMemory(this.memory)
+          hilog.info(DOMAIN, TAG, FORMAT, "id: "+ id)
         })
         .backgroundColor(Color.Gray)
-      Button("Display")
-        .onClick(async () =>{
-          this.message += "?"
-          fetchMediaExample(this.uri)
-        })
 
     }
     .height('100%')
