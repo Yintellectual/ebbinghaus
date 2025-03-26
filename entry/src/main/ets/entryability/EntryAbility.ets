@@ -2,6 +2,7 @@ import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.Ab
 import { window } from '@kit.ArkUI';
 import {KVManagerSingletonWrapper} from '../database/KVManagerSingletonWrapper'
 import {SampleKVService} from '../database/SampleKVService'
+import {MemoryManager} from '../database/MemoryManager'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
 const TAG = "KVManager"
@@ -13,6 +14,7 @@ export default class EntryAbility extends UIAbility {
     hilog.info(DOMAIN, TAG, FORMAT, 'Ability onCreate');
     KVManagerSingletonWrapper.init(this.context)
     SampleKVService.getInstance().init()
+    MemoryManager.getInstance().init(this.context)
   }
 
   onDestroy(): void {
