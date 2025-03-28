@@ -1,6 +1,6 @@
 import {KVManagerSingletonWrapper} from '../database/KVManagerSingletonWrapper'
 import {SampleKVService} from '../database/SampleKVService'
-
+import {router} from '@kit.ArkUI'
 
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import {fetchMediaExample} from '../media/MediaDataHandler'
@@ -52,6 +52,9 @@ struct Index {
           if(this.memory){
             MemoryManager.getInstance().addMemory(this.memory)
           }
+          router.pushUrl({
+            url: "pages/ImageExamplePage"
+          })
         })
       Button("Find All")
         .alignRules({
@@ -92,7 +95,7 @@ struct Index {
           hilog.info(DOMAIN, TAG, FORMAT, "id: "+ id)
         })
         .backgroundColor(Color.Gray)
-
+        
     }
     .height('100%')
     .width('100%')
