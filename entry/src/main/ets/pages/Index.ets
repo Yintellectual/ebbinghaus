@@ -2,6 +2,8 @@ import {image} from '@kit.ImageKit'
 import GridColColumnOption from '@kit.UIDesignKit'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
+import {sm2} from '../ebbinghaus/sm_2.py'
+import {getTimeInterval} from '../utils/get_time_interval'
 import {Logger} from '../utils/Logger'
 import { router } from '@kit.ArkUI';
 import { Memory } from '../entities/Memory';
@@ -29,8 +31,12 @@ struct ExamplePage {
   private items:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
   private memoryDataSource : MemoryDataSource = new MemoryDataSource([])
 
+
   async aboutToAppear(): Promise<void> {
-    let memories = await MemoryManager.getInstance().getMemories(MemoryManager.createPaginationPredicates(20, 0))
+    logger.log(`${sm2()}`)
+    let timeInterval = getTimeInterval(1)
+
+    let memories = await MemoryManager.getInstance().getMemories(MemoryManager.createDateRangePredicates(timeInterval.start, timeInterval.end))
     logger.log(`Fetch memories from database, count to ${memories.length}`)
     for (let m of memories){
       this.memoryDataSource.addItem(m)
