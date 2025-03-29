@@ -5,9 +5,9 @@ import {router} from '@kit.ArkUI'
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import {fetchMediaExample} from '../media/MediaDataHandler'
 import { BusinessError } from '@kit.BasicServicesKit';
-import { hilog } from '@kit.PerformanceAnalysisKit';
 import { MemoryManager} from '../database/MemoryManager';
 import {Memory} from '../entities/Memory'
+import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
 const TAG = "rdb"
 const FORMAT = '%{public}s'

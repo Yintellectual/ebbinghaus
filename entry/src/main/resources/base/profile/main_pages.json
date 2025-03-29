@@ -1,5 +1,6 @@
 {
   "src": [
+    "pages/NewMemory",
     "pages/Index",
     "pages/SamplePage",
     "pages/ResponsiveGridSystemSamplePage"

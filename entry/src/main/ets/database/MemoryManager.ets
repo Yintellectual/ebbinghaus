@@ -3,17 +3,17 @@ import { Context } from '@ohos.arkui.UIContext';
 import {Memory} from '../entities/Memory'
 import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-const DOMAIN = 0x0000;
-const TAG = "rdb"
-const FORMAT = '%{public}s'
-function log(message:string, err?:BusinessError){
+import {Logger} from '../utils/Logger'
 
-  if(err){
-    hilog.error(DOMAIN, TAG, FORMAT, `Code: ${err.code}, Message:${message},\n${err.message}`)
-  }else{
-    hilog.info(DOMAIN, TAG, FORMAT, `Message:${message}`)
-  }
+const DOMAIN = 0x0000;
+const TAG = "crud"
+const FORMAT = '%{public}s'
+const logger = new Logger(DOMAIN, TAG, FORMAT)
+
+function log(message:string, err?:BusinessError){
+  logger.log(message, err)
 }
+
 
 const DB_NAME = 'memories.db';
 const MEMORY_TABLE = 'MEMORY';
@@ -72,19 +72,14 @@ export class MemoryManager{
       log('rdbStore not found')
       return -1
     }
-    log("add memory: " + memory.IMAGES[0])
     const valueBucket: relationalStore.ValuesBucket = {
       'NAME': memory.NAME,
       'DATE': memory.DATE,
       'DESCRIPTION': memory.DESCRIPTION,
       'IS_ENABLED': memory.IS_ENABLED ? 1 : 0
     };
-    let transaction_id: number | undefined
-    log("before transaction")
     try {
       await this.rdbStore.beginTransaction()
-      //transaction_id = await this.rdbStore.beginTrans();
-      log("transaction id: "+ transaction_id)
       const insertId = await this.rdbStore.insert(MEMORY_TABLE, valueBucket);
 
       for (const imageUri of memory.IMAGES) {
@@ -100,8 +95,6 @@ export class MemoryManager{
       return insertId;
     } catch (err) {
       log(`Add memory failed: ${(err as BusinessError).message}`, err);
-      //await this.rdbStore.rollback(transaction_id);
-      //log(`Add memory failed, but rolled back: `+ transaction_id)
       return -1;
     }
   }
