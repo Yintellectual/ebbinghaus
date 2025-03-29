@@ -1,6 +1,7 @@
 {
   "src": [
     "pages/Index",
-    "pages/ImageExamplePage"
+    "pages/SamplePage",
+    "pages/ResponsiveGridSystemSamplePage"
   ]
 }
