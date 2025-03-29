@@ -98,11 +98,48 @@ export class MemoryManager{
       return -1;
     }
   }
-  async getMemoriesByDate(start: number, end: number): Promise<Memory[]> {
-    if (!this.rdbStore) return [];
 
-    const predicates = new relationalStore.RdbPredicates(MEMORY_TABLE);
-    predicates.between('DATE', start, end).orderByAsc('DATE');
+  /**
+   * Creates query predicates for records within a specified date range, sorted chronologically
+   * @param startTimestamp - Inclusive start of date range (UTC timestamp in milliseconds)
+   * @param endTimestamp - Inclusive end of date range (UTC timestamp in milliseconds)
+   * @returns Configured RdbPredicates with date filtering and ascending sort order
+   */
+  public static createDateRangePredicates(startTimestamp: number, endTimestamp: number): relationalStore.RdbPredicates {
+    return new relationalStore.RdbPredicates(MEMORY_TABLE)
+      .between('DATE', startTimestamp, endTimestamp)
+      .orderByAsc('DATE');
+  }
+
+  /**
+   * Creates a paginated query predicate for the memory table
+   * @param limit - Maximum number of items per page
+   * @param page - Zero-based page index (0 = first page)
+   * @returns Configured RdbPredicates with pagination clauses
+   */
+  public static createPaginationPredicates(limit: number, page: number): relationalStore.RdbPredicates {
+    const basePredicates = new relationalStore.RdbPredicates(MEMORY_TABLE);
+    return MemoryManager.applyPaginationClauses(basePredicates, limit, page);
+  }
+
+  /**
+   * Applies pagination parameters to an existing RdbPredicates query
+   * @param predicates - Existing predicate to enhance with pagination
+   * @param limit - Maximum number of items to return
+   * @param page - Zero-based page index (page 0 = first results)
+   * @returns Modified RdbPredicates with limit/offset clauses
+   */
+  public static applyPaginationClauses(
+    predicates: relationalStore.RdbPredicates,
+    limit: number,
+    page: number
+  ): relationalStore.RdbPredicates {
+    const offset = page * limit;
+    return predicates.limitAs(limit).offsetAs(offset);
+  }
+
+  async getMemories(predicates: relationalStore.RdbPredicates): Promise<Memory[]> {
+    if (!this.rdbStore) return [];
 
     try {
       const memories: Memory[] = [];
