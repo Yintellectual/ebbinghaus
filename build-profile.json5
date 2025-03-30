@@ -5,13 +5,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\yuchen\\.ohos\\config\\default_ebbinghaus2_dkD12Z5WeqSUUo7fsrMenWeryyf1haupOb_TwckgGOo=.cer",
+          "certpath": "C:\\Users\\intel\\.ohos\\config\\default_ebbinghaus_v4Kh_rV98NewoEsB7jFZ5JQ7x7OrcUiaBrbzn9P4iY0=.cer",
+          "storePassword": "0000001B1B1B826089AB36249889A5EF05208416E358635BE164DDC69B7A34ECA1FA630D9950859DAC8EDC",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BEE6B3E8A794C5E3A86FE096B8020B43C8FBC4EEFD15B1EB8D5F5D794FF60753E79BCF4B3D0B690",
-          "profile": "C:\\Users\\yuchen\\.ohos\\config\\default_ebbinghaus2_dkD12Z5WeqSUUo7fsrMenWeryyf1haupOb_TwckgGOo=.p7b",
+          "keyPassword": "0000001B57B7CA6FC7A5A44C45B6EFBAE3232BE1B4FDA7B5082E53BADA7A8222F1B44302891C85E6B4DD63",
+          "profile": "C:\\Users\\intel\\.ohos\\config\\default_ebbinghaus_v4Kh_rV98NewoEsB7jFZ5JQ7x7OrcUiaBrbzn9P4iY0=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\yuchen\\.ohos\\config\\default_ebbinghaus2_dkD12Z5WeqSUUo7fsrMenWeryyf1haupOb_TwckgGOo=.p12",
-          "storePassword": "0000001B9FB65433406EDDF8559C4BF8A6000FA99A7DBC37ABA0CA77C6C2B4E16BBD14A027453DC2A55B09"
+          "storeFile": "C:\\Users\\intel\\.ohos\\config\\default_ebbinghaus_v4Kh_rV98NewoEsB7jFZ5JQ7x7OrcUiaBrbzn9P4iY0=.p12"
         }
       }
     ],
