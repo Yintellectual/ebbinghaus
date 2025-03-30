@@ -5,7 +5,7 @@ import {router} from '@kit.ArkUI'
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import {fetchMediaExample} from '../media/MediaDataHandler'
 import { BusinessError } from '@kit.BasicServicesKit';
-import { MemoryManager} from '../database/MemoryManager';
+import { MemoryManager} from '../database/memory/MemoryManager';
 import {Memory} from '../entities/Memory'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;

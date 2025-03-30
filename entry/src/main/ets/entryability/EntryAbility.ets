@@ -2,19 +2,21 @@ import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.Ab
 import { window } from '@kit.ArkUI';
 import {KVManagerSingletonWrapper} from '../database/KVManagerSingletonWrapper'
 import {SampleKVService} from '../database/SampleKVService'
-import {MemoryManager} from '../database/MemoryManager'
+import {MemoryManager} from '../database/memory/MemoryManager'
+import rdbStoreProvider from '../database/RdbStoreProvider'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
 const TAG = "KVManager"
 const FORMAT = '%{public}s'
 
 export default class EntryAbility extends UIAbility {
-  onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+  async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): Promise<void> {
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
     hilog.info(DOMAIN, TAG, FORMAT, 'Ability onCreate');
     KVManagerSingletonWrapper.init(this.context)
     SampleKVService.getInstance().init()
-    MemoryManager.getInstance().init(this.context)
+    await rdbStoreProvider.init(this.context)
+    MemoryManager.getInstance().init()
   }
 
   onDestroy(): void {

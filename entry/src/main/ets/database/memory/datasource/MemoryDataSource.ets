@@ -1,4 +1,4 @@
-import { Memory } from "../../entities/Memory";
+import { Memory } from "../../../entities/Memory";
 
 export class MemoryDataSource implements IDataSource{
   private memories: Array<Memory>  = []

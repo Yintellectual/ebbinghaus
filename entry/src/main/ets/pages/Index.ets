@@ -7,8 +7,8 @@ import {getTimeInterval} from '../utils/get_time_interval'
 import {Logger} from '../utils/Logger'
 import { router } from '@kit.ArkUI';
 import { Memory } from '../entities/Memory';
-import { MemoryManager } from '../database/MemoryManager'
-import { MemoryDataSource } from '../database/datasource/MemoryDataSource';
+import { MemoryManager } from '../database/memory/MemoryManager'
+import { MemoryDataSource } from '../database/memory/datasource/MemoryDataSource';
 
 const DOMAIN = 0x0000;
 const TAG = "crud"

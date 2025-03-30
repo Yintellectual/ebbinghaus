@@ -4,7 +4,7 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import {Logger} from '../utils/Logger'
 import { router } from '@kit.ArkUI';
-import { MemoryManager} from '../database/MemoryManager';
+import { MemoryManager} from '../database/memory/MemoryManager';
 import {Memory} from '../entities/Memory'
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 
