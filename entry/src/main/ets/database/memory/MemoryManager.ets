@@ -16,7 +16,7 @@ function log(message:string, err?:BusinessError){
   logger.log(message, err)
 }
 
-export class MemoryManager{
+class MemoryManager{
   private static instance: MemoryManager |null = null
   public static getInstance(): MemoryManager{
     if (!MemoryManager.instance){
@@ -26,8 +26,9 @@ export class MemoryManager{
   }
   private constructor() {
   }
-  private rdbStore: relationalStore.RdbStore = rdbStoreProvider.getRdbStore()
+  private rdbStore: relationalStore.RdbStore | null = null
   public async init(){
+    this.rdbStore= rdbStoreProvider.getRdbStore()
     try {
       await this.rdbStore.executeSql(
         `CREATE TABLE IF NOT EXISTS ${MEMORY_TABLE} (
@@ -53,6 +54,45 @@ export class MemoryManager{
     } catch (err) {
       log("Database init failed:", err)
     }
+  }
+
+    /**
+     * Creates query predicates for records within a specified date range, sorted chronologically
+     * @param startTimestamp - Inclusive start of date range (UTC timestamp in milliseconds)
+     * @param endTimestamp - Inclusive end of date range (UTC timestamp in milliseconds)
+     * @returns Configured RdbPredicates with date filtering and ascending sort order
+     */
+    public createDateRangePredicates(startTimestamp: number, endTimestamp: number): relationalStore.RdbPredicates {
+    return new relationalStore.RdbPredicates(MEMORY_TABLE)
+      .between('DATE', startTimestamp, endTimestamp)
+      .orderByAsc('DATE');
+  }
+
+    /**
+     * Creates a paginated query predicate for the memory table
+     * @param limit - Maximum number of items per page
+     * @param page - Zero-based page index (0 = first page)
+     * @returns Configured RdbPredicates with pagination clauses
+     */
+  public createPaginationPredicates(limit: number, page: number): relationalStore.RdbPredicates {
+    const basePredicates = new relationalStore.RdbPredicates(MEMORY_TABLE);
+    return this.applyPaginationClauses(basePredicates, limit, page);
+  }
+
+    /**
+     * Applies pagination parameters to an existing RdbPredicates query
+     * @param predicates - Existing predicate to enhance with pagination
+     * @param limit - Maximum number of items to return
+     * @param page - Zero-based page index (page 0 = first results)
+     * @returns Modified RdbPredicates with limit/offset clauses
+     */
+  public applyPaginationClauses(
+    predicates: relationalStore.RdbPredicates,
+    limit: number,
+    page: number
+  ): relationalStore.RdbPredicates {
+    const offset = page * limit;
+    return predicates.limitAs(limit).offsetAs(offset);
   }
 
   public async addMemory(memory: Memory){
@@ -85,45 +125,6 @@ export class MemoryManager{
       log(`Add memory failed: ${(err as BusinessError).message}`, err);
       return -1;
     }
-  }
-
-  /**
-   * Creates query predicates for records within a specified date range, sorted chronologically
-   * @param startTimestamp - Inclusive start of date range (UTC timestamp in milliseconds)
-   * @param endTimestamp - Inclusive end of date range (UTC timestamp in milliseconds)
-   * @returns Configured RdbPredicates with date filtering and ascending sort order
-   */
-  public static createDateRangePredicates(startTimestamp: number, endTimestamp: number): relationalStore.RdbPredicates {
-    return new relationalStore.RdbPredicates(MEMORY_TABLE)
-      .between('DATE', startTimestamp, endTimestamp)
-      .orderByAsc('DATE');
-  }
-
-  /**
-   * Creates a paginated query predicate for the memory table
-   * @param limit - Maximum number of items per page
-   * @param page - Zero-based page index (0 = first page)
-   * @returns Configured RdbPredicates with pagination clauses
-   */
-  public static createPaginationPredicates(limit: number, page: number): relationalStore.RdbPredicates {
-    const basePredicates = new relationalStore.RdbPredicates(MEMORY_TABLE);
-    return MemoryManager.applyPaginationClauses(basePredicates, limit, page);
-  }
-
-  /**
-   * Applies pagination parameters to an existing RdbPredicates query
-   * @param predicates - Existing predicate to enhance with pagination
-   * @param limit - Maximum number of items to return
-   * @param page - Zero-based page index (page 0 = first results)
-   * @returns Modified RdbPredicates with limit/offset clauses
-   */
-  public static applyPaginationClauses(
-    predicates: relationalStore.RdbPredicates,
-    limit: number,
-    page: number
-  ): relationalStore.RdbPredicates {
-    const offset = page * limit;
-    return predicates.limitAs(limit).offsetAs(offset);
   }
 
   async getMemories(predicates: relationalStore.RdbPredicates): Promise<Memory[]> {
@@ -163,14 +164,8 @@ export class MemoryManager{
       return [];
     }
   }
-
-  public destroy(context: Context){
-    relationalStore.deleteRdbStore(context, DB_NAME, (err: BusinessError) => {
-      if (err) {
-        log(`Failed to delete RdbStore:${DB_NAME}`, err);
-        return;
-      }
-      log(`Succeeded in deleting RdbStore:${DB_NAME}`);
-    });
-  }
 }
+
+
+
+export default MemoryManager.getInstance()

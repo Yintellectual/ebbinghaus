@@ -5,7 +5,7 @@ import {router} from '@kit.ArkUI'
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import {fetchMediaExample} from '../media/MediaDataHandler'
 import { BusinessError } from '@kit.BasicServicesKit';
-import { MemoryManager} from '../database/memory/MemoryManager';
+import memoryManager from '../database/memory/MemoryManager';
 import {Memory} from '../entities/Memory'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
@@ -50,7 +50,7 @@ struct Index {
           this.message += "?"
           fetchMediaExample(this.uri)
           if(this.memory){
-            MemoryManager.getInstance().addMemory(this.memory)
+            memoryManager.addMemory(this.memory)
           }
           router.pushUrl({
             url: "pages/ResponsiveGridSystemSamplePage"
@@ -62,7 +62,7 @@ struct Index {
         })
         .onClick(async ()=>{
           if(this.memory){
-            this.memories = await MemoryManager.getInstance().getMemories(MemoryManager.createDateRangePredicates(0, Date.now()))
+            this.memories = await memoryManager.getMemories(memoryManager.createDateRangePredicates(0, Date.now()))
             this.message = this.memories.length + ""
           }
         })
@@ -91,7 +91,7 @@ struct Index {
           hilog.info(DOMAIN, TAG, FORMAT, "what then2?")
           this.memory.IMAGES = uris
           hilog.info(DOMAIN, TAG, FORMAT, "what then?3")
-          let id = await MemoryManager.getInstance().addMemory(this.memory)
+          let id = await memoryManager.addMemory(this.memory)
           hilog.info(DOMAIN, TAG, FORMAT, "id: "+ id)
         })
         .backgroundColor(Color.Gray)

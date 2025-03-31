@@ -7,7 +7,8 @@ import {getTimeInterval} from '../utils/get_time_interval'
 import {Logger} from '../utils/Logger'
 import { router } from '@kit.ArkUI';
 import { Memory } from '../entities/Memory';
-import { MemoryManager } from '../database/memory/MemoryManager'
+
+import memoryManager from '../database/memory/MemoryManager';
 import { MemoryDataSource } from '../database/memory/datasource/MemoryDataSource';
 
 const DOMAIN = 0x0000;
@@ -34,9 +35,9 @@ struct ExamplePage {
 
   async aboutToAppear(): Promise<void> {
     logger.log(`${sm2()}`)
-    let timeInterval = getTimeInterval(1)
+    let timeInterval = getTimeInterval(0)
 
-    let memories = await MemoryManager.getInstance().getMemories(MemoryManager.createDateRangePredicates(timeInterval.start, timeInterval.end))
+    let memories = await memoryManager.getMemories(memoryManager.createDateRangePredicates(timeInterval.start, timeInterval.end))
     logger.log(`Fetch memories from database, count to ${memories.length}`)
     for (let m of memories){
       this.memoryDataSource.addItem(m)
@@ -62,7 +63,7 @@ struct ExamplePage {
 
         LazyForEach(this.memoryDataSource, (memory:Memory)=>{
           GridCol(){
-            Text(`memory.NAME: ${memory.NAME}}`)
+            Text(`memory.NAME: ${memory.NAME}`)
           }
           .span(LARGE_GRID)
           .border({width:'5vp', color:Color.Red})

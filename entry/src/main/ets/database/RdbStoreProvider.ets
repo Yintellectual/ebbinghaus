@@ -48,6 +48,16 @@ class RdbStoreProvider{
     }
     return this.rdbStore;
   }
+
+  public destroy(context: Context){
+    relationalStore.deleteRdbStore(context, DB_NAME, (err: BusinessError) => {
+      if (err) {
+        log(`Failed to delete RdbStore:${DB_NAME}`, err);
+        return;
+      }
+      log(`Succeeded in deleting RdbStore:${DB_NAME}`);
+    });
+  }
 }
 
 export default RdbStoreProvider.getInstance()

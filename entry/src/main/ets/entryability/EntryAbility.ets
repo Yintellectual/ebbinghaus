@@ -2,7 +2,7 @@ import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.Ab
 import { window } from '@kit.ArkUI';
 import {KVManagerSingletonWrapper} from '../database/KVManagerSingletonWrapper'
 import {SampleKVService} from '../database/SampleKVService'
-import {MemoryManager} from '../database/memory/MemoryManager'
+import memoryManager from '../database/memory/MemoryManager'
 import rdbStoreProvider from '../database/RdbStoreProvider'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
@@ -16,7 +16,7 @@ export default class EntryAbility extends UIAbility {
     KVManagerSingletonWrapper.init(this.context)
     SampleKVService.getInstance().init()
     await rdbStoreProvider.init(this.context)
-    MemoryManager.getInstance().init()
+    await memoryManager.init()
   }
 
   onDestroy(): void {
@@ -39,8 +39,7 @@ export default class EntryAbility extends UIAbility {
   onWindowStageDestroy(): void {
     // Main window is destroyed, release UI related resources
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageDestroy');
-    MemoryManager.getInstance().destroy(this.context)
-
+    rdbStoreProvider.destroy(this.context)
   }
 
   onForeground(): void {
