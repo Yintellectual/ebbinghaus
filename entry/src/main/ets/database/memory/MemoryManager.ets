@@ -40,7 +40,7 @@ class MemoryManager{
           NAME TEXT NOT NULL,
           DATE INTEGER,
           DESCRIPTION TEXT,
-          IS_ENABLED INTEGER,
+          IS_ENABLED INTEGER
           )`
       );
       log(`Succeeded in initializing table::${MEMORY_TABLE}`)
@@ -58,45 +58,6 @@ class MemoryManager{
     } catch (err) {
       log("Database init failed:", err)
     }
-  }
-
-    /**
-     * Creates query predicates for records within a specified date range, sorted chronologically
-     * @param startTimestamp - Inclusive start of date range (UTC timestamp in milliseconds)
-     * @param endTimestamp - Inclusive end of date range (UTC timestamp in milliseconds)
-     * @returns Configured RdbPredicates with date filtering and ascending sort order
-     */
-    public createDateRangePredicates(startTimestamp: number, endTimestamp: number): relationalStore.RdbPredicates {
-    return new relationalStore.RdbPredicates(MEMORY_TABLE)
-      .between('DATE', startTimestamp, endTimestamp)
-      .orderByAsc('DATE');
-  }
-
-    /**
-     * Creates a paginated query predicate for the memory table
-     * @param limit - Maximum number of items per page
-     * @param page - Zero-based page index (0 = first page)
-     * @returns Configured RdbPredicates with pagination clauses
-     */
-  public createPaginationPredicates(limit: number, page: number): relationalStore.RdbPredicates {
-    const basePredicates = new relationalStore.RdbPredicates(MEMORY_TABLE);
-    return this.applyPaginationClauses(basePredicates, limit, page);
-  }
-
-    /**
-     * Applies pagination parameters to an existing RdbPredicates query
-     * @param predicates - Existing predicate to enhance with pagination
-     * @param limit - Maximum number of items to return
-     * @param page - Zero-based page index (page 0 = first results)
-     * @returns Modified RdbPredicates with limit/offset clauses
-     */
-  public applyPaginationClauses(
-    predicates: relationalStore.RdbPredicates,
-    limit: number,
-    page: number
-  ): relationalStore.RdbPredicates {
-    const offset = page * limit;
-    return predicates.limitAs(limit).offsetAs(offset);
   }
 
   public async addMemory(memory: Memory){
@@ -126,12 +87,12 @@ class MemoryManager{
       log(`Successfully inserted memory with id: ${insertId}}`)
       return insertId;
     } catch (err) {
-      log(`Add memory failed: ${(err as BusinessError).message}`, err);
+      log(`Add memory failed`, err);
       return -1;
     }
   }
 
-  async getMemories(predicates: relationalStore.RdbPredicates): Promise<Memory[]> {
+  public async getMemories(predicates: relationalStore.RdbPredicates): Promise<Memory[]> {
     if (!this.rdbStore) return [];
 
     try {
@@ -167,6 +128,10 @@ class MemoryManager{
       log(`Query failed: ${(err as BusinessError).message}`, err);
       return [];
     }
+  }
+
+  public async getMemoriesByDate(start_timestamp: number, end_timestamp: number){
+    return this.getMemories(rdbStoreProvider.createDateRangePredicates(MEMORY_TABLE, 'DATE', start_timestamp, end_timestamp))
   }
 }
 

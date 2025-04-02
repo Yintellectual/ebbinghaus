@@ -2,7 +2,6 @@ import {image} from '@kit.ImageKit'
 import GridColColumnOption from '@kit.UIDesignKit'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import {sm2} from '../ebbinghaus/sm_2'
 import {getTimeInterval} from '../utils/get_time_interval'
 import {Logger} from '../utils/Logger'
 import { router } from '@kit.ArkUI';
@@ -34,10 +33,9 @@ struct ExamplePage {
 
 
   async aboutToAppear(): Promise<void> {
-    logger.log(`${sm2()}`)
     let timeInterval = getTimeInterval(0)
 
-    let memories = await memoryManager.getMemories(memoryManager.createDateRangePredicates(timeInterval.start, timeInterval.end))
+    let memories = await memoryManager.getMemoriesByDate(timeInterval.start, timeInterval.end)
     logger.log(`Fetch memories from database, count to ${memories.length}`)
     for (let m of memories){
       this.memoryDataSource.addItem(m)

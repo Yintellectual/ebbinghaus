@@ -4,6 +4,7 @@ import {KVManagerSingletonWrapper} from '../database/KVManagerSingletonWrapper'
 import {SampleKVService} from '../database/SampleKVService'
 import memoryManager from '../database/memory/MemoryManager'
 import rdbStoreProvider from '../database/RdbStoreProvider'
+import repetitionManager from '../database/repetition/RepetitionManager'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 const DOMAIN = 0x0000;
 const TAG = "KVManager"
@@ -17,6 +18,7 @@ export default class EntryAbility extends UIAbility {
     SampleKVService.getInstance().init()
     await rdbStoreProvider.init(this.context)
     await memoryManager.init()
+    await repetitionManager.init()
   }
 
   onDestroy(): void {

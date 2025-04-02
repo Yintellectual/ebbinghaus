@@ -56,6 +56,45 @@ class RdbStoreProvider{
       log(`Succeeded in deleting RdbStore:${DB_NAME}`);
     });
   }
+
+  /**
+   * Creates query predicates for records within a specified date range, sorted chronologically
+   * @param startTimestamp - Inclusive start of date range (UTC timestamp in milliseconds)
+   * @param endTimestamp - Inclusive end of date range (UTC timestamp in milliseconds)
+   * @returns Configured RdbPredicates with date filtering and ascending sort order
+   */
+  public createDateRangePredicates(table: string, field: string, startTimestamp: number, endTimestamp: number): relationalStore.RdbPredicates {
+    return new relationalStore.RdbPredicates(table)
+      .between(field, startTimestamp, endTimestamp)
+      .orderByAsc(field);
+  }
+
+  /**
+   * Creates a paginated query predicate for the memory table
+   * @param limit - Maximum number of items per page
+   * @param page - Zero-based page index (0 = first page)
+   * @returns Configured RdbPredicates with pagination clauses
+   */
+  public createPaginationPredicates(table:string, limit: number, page: number): relationalStore.RdbPredicates {
+    const basePredicates = new relationalStore.RdbPredicates(table);
+    return this.applyPaginationClauses(basePredicates, limit, page);
+  }
+
+  /**
+   * Applies pagination parameters to an existing RdbPredicates query
+   * @param predicates - Existing predicate to enhance with pagination
+   * @param limit - Maximum number of items to return
+   * @param page - Zero-based page index (page 0 = first results)
+   * @returns Modified RdbPredicates with limit/offset clauses
+   */
+  public applyPaginationClauses(
+    predicates: relationalStore.RdbPredicates,
+    limit: number,
+    page: number
+  ): relationalStore.RdbPredicates {
+    const offset = page * limit;
+    return predicates.limitAs(limit).offsetAs(offset);
+  }
 }
 
 export default RdbStoreProvider.getInstance()

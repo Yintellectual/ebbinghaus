@@ -36,22 +36,72 @@ class RepetitionManager{
           last_viewed_timestamp INTEGER,
           times_reviewed INTEGER DEFAULT 0,
           next_review_timestamp INTEGER,
-          is_activated INTEGER NOT NULL DEFAULT 1
+          is_activated INTEGER NOT NULL DEFAULT 1,
           FOREIGN KEY (memory_id) REFERENCES ${MEMORY_TABLE}(ID) ON DELETE CASCADE
         )`);
+      logger.log(`Succeeded in initializing ${REPETITION_TABLE}`)
       await this.rdbStore.executeSql(
         `CREATE INDEX IF NOT EXISTS IDX_REPETITION_NEXT_REVIEW
           ON ${REPETITION_TABLE}(next_review_timestamp)`
       )
-
       logger.log(`Succeeded in initializing RepetitionManager`)
     } catch (err) {
       logger.log("Database init failed:", err)
     }
   }
 
-  public async add_repetition(repetition: Repetition){
+  public async add_repetition(repetition: Repetition): Promise<number>{
+    if (!this.rdbStore){
+      logger.log('rdbStore not found')
+      return -1
+    }
+    const valueBucket: relationalStore.ValuesBucket = {
+      'memory_id': repetition.MEMORY_ID,
+      'last_viewed_timestamp': repetition.LAST_VIEWED_TIMESTAMP,
+      'times_reviewed': repetition.TIMES_REVIEWED,
+      'next_review_timestamp': repetition.NEXT_REVIEWED_TIMESTAMP,
+      'is_activated': repetition.IS_ACTIVATED ? 1 : 0
+    };
+    try{
+      await this.rdbStore.beginTransaction()
+      const memory_id = await this.rdbStore.insert(REPETITION_TABLE, valueBucket);
+      await this.rdbStore.commit();
+      logger.log(`Successfully inserted repetition with id: ${memory_id}}`)
+      return memory_id
+    }catch (err) {
+      logger.log(`add_repetition failed`, err);
+      return -1;
+    }
+  }
 
+  public async getRepetitions(predicates:relationalStore.RdbPredicates): Promise<Repetition[]>{
+    if (!this.rdbStore) return [];
+
+    try{
+      const repetitions: Repetition[] = [];
+      const resultSet = await this.rdbStore.query(predicates,
+        ['memory_id', 'last_viewed_timestamp', 'times_reviewed', 'next_review_timestamp', 'is_activated']);
+
+      while (resultSet.goToNextRow()) {
+
+
+        let memory_id = resultSet.getDouble(resultSet.getColumnIndex('memory_id'));
+        let repetition = new Repetition(memory_id)
+        repetition.LAST_VIEWED_TIMESTAMP = resultSet.getDouble(resultSet.getColumnIndex('last_viewed_timestamp'));
+        repetition.TIMES_REVIEWED = resultSet.getDouble(resultSet.getColumnIndex('times_reviewed'));
+        repetition.NEXT_REVIEWED_TIMESTAMP = resultSet.getDouble(resultSet.getColumnIndex('next_review_timestamp'));
+        repetition.IS_ACTIVATED = resultSet.getDouble(resultSet.getColumnIndex('is_activated')) === 1;
+
+        repetitions.push(repetition);
+        logger.log(`${repetition}`)
+      }
+      resultSet.close()
+      logger.log(`Found ${repetitions.length} repetitions`)
+      return repetitions
+    } catch (err) {
+      logger.log(`Query failed: ${(err as BusinessError).message}`, err);
+      return [];
+    }
   }
 
 }

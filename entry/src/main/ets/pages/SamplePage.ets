@@ -62,7 +62,7 @@ struct Index {
         })
         .onClick(async ()=>{
           if(this.memory){
-            this.memories = await memoryManager.getMemories(memoryManager.createDateRangePredicates(0, Date.now()))
+            this.memories = await memoryManager.getMemoriesByDate(0, Date.now())
             this.message = this.memories.length + ""
           }
         })
