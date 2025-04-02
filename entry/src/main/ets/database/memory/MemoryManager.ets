@@ -5,7 +5,7 @@ import { BusinessError } from '@kit.BasicServicesKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import {Logger} from '../../utils/Logger'
 import rdbStoreProvider from '../../database/RdbStoreProvider'
-import {DB_NAME, MEMORY_TABLE, IMAGE_TABLE} from '../../database/RdbStoreProvider'
+import {DB_NAME} from '../../database/RdbStoreProvider'
 
 const DOMAIN = 0x0000;
 const TAG = "crud"
@@ -15,6 +15,9 @@ const logger = new Logger(DOMAIN, TAG, FORMAT)
 function log(message:string, err?:BusinessError){
   logger.log(message, err)
 }
+
+export const MEMORY_TABLE = 'MEMORY';
+export const IMAGE_TABLE = 'MEMORY_IMAGE';
 
 class MemoryManager{
   private static instance: MemoryManager |null = null
@@ -29,6 +32,7 @@ class MemoryManager{
   private rdbStore: relationalStore.RdbStore | null = null
   public async init(){
     this.rdbStore= rdbStoreProvider.getRdbStore()
+    log(`Succeeded in getting RdbStore::${DB_NAME}`)
     try {
       await this.rdbStore.executeSql(
         `CREATE TABLE IF NOT EXISTS ${MEMORY_TABLE} (
@@ -36,21 +40,21 @@ class MemoryManager{
           NAME TEXT NOT NULL,
           DATE INTEGER,
           DESCRIPTION TEXT,
-          IS_ENABLED INTEGER)`
+          IS_ENABLED INTEGER,
+          )`
       );
-
+      log(`Succeeded in initializing table::${MEMORY_TABLE}`)
       await this.rdbStore.executeSql(
         `CREATE TABLE IF NOT EXISTS ${IMAGE_TABLE} (
           ID INTEGER PRIMARY KEY AUTOINCREMENT,
           MEMORY_ID INTEGER,
           IMAGE_URI TEXT)`
       );
-
+      log(`Succeeded in initializing table::${IMAGE_TABLE}`)
       await this.rdbStore.executeSql(
         'CREATE INDEX IF NOT EXISTS IDX_MEMORY_DATE ON MEMORY(DATE)'
       );
-      log(`Succeeded in getting RdbStore::${DB_NAME}`)
-      log(`RdbStore version == ${this.rdbStore.version}`)
+      log(`Succeeded in initializing MemoryManager`)
     } catch (err) {
       log("Database init failed:", err)
     }

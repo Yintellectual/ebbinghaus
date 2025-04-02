@@ -2,7 +2,7 @@ import {image} from '@kit.ImageKit'
 import GridColColumnOption from '@kit.UIDesignKit'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import {sm2} from '../ebbinghaus/sm_2.py'
+import {sm2} from '../ebbinghaus/sm_2'
 import {getTimeInterval} from '../utils/get_time_interval'
 import {Logger} from '../utils/Logger'
 import { router } from '@kit.ArkUI';

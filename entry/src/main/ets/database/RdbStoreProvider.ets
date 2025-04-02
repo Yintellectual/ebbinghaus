@@ -15,8 +15,6 @@ function log(message:string, err?:BusinessError){
 }
 
 export const DB_NAME = 'ebbinghaus.db';
-export const MEMORY_TABLE = 'MEMORY';
-export const IMAGE_TABLE = 'MEMORY_IMAGE';
 
 const STORE_CONFIG :relationalStore.StoreConfig= {
   name: DB_NAME, // 数据库文件名

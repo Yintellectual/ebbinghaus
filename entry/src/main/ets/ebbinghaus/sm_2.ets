@@ -1,4 +1,4 @@
-export function sm2 () {
+function sm2 () {
   let interval = 1
   let days_to_review = [0]
   for (let i=0; i<50; i++){
