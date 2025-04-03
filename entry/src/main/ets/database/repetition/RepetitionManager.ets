@@ -131,6 +131,13 @@ class RepetitionManager{
 
     return this.getRepetitions(predicate)
   }
+
+  public async review(memory_id: number){
+    let repetitions = await this.getRepetitions(new relationalStore.RdbPredicates(REPETITION_TABLE).in('memory_id', [memory_id]))
+    let repetition = repetitions[0]
+    repetition.review()
+    await this.add_repetition(repetition)
+  }
 }
 
 export default RepetitionManager.getInstance()

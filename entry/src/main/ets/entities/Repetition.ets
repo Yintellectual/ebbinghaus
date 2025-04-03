@@ -23,13 +23,13 @@ export class Repetition{
     return this.addDaysToTimestamp(this.LAST_VIEWED_TIMESTAMP, REVIEW_INTERVALS[this.TIMES_REVIEWED])
   }
 
-  public review(repetition: Repetition){
-    repetition.TIMES_REVIEWED += 1
-    if(repetition.TIMES_REVIEWED > REVIEW_INTERVALS.length){
-      repetition.IS_ACTIVATED = false
+  public review(){
+    this.TIMES_REVIEWED += 1
+    if(this.TIMES_REVIEWED > REVIEW_INTERVALS.length){
+      this.IS_ACTIVATED = false
     }
-    repetition.LAST_VIEWED_TIMESTAMP = Date.now()
-    repetition.NEXT_REVIEWED_TIMESTAMP = this.calculate_next_review_timestamp()
+    this.LAST_VIEWED_TIMESTAMP = Date.now()
+    this.NEXT_REVIEWED_TIMESTAMP = this.calculate_next_review_timestamp()
   }
 
   toString(): string {
