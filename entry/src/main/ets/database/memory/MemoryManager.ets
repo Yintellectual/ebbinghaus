@@ -133,6 +133,9 @@ class MemoryManager{
   public async getMemoriesByDate(start_timestamp: number, end_timestamp: number){
     return this.getMemories(rdbStoreProvider.createDateRangePredicates(MEMORY_TABLE, 'DATE', start_timestamp, end_timestamp))
   }
+  public async getMemoriesByID(ids: number[]){
+    return this.getMemories(new relationalStore.RdbPredicates(MEMORY_TABLE).in('ID', ids))
+  }
 }
 
 

@@ -9,6 +9,9 @@ import { Memory } from '../entities/Memory';
 
 import memoryManager from '../database/memory/MemoryManager';
 import { MemoryDataSource } from '../database/memory/datasource/MemoryDataSource';
+import repetitionManager from '../database/repetition/RepetitionManager'
+import { Repetition } from '../entities/Repetition';
+import { HashMap } from '@kit.ArkTS';
 
 const DOMAIN = 0x0000;
 const TAG = "crud"
@@ -30,16 +33,25 @@ struct ExamplePage {
   @State progress: number = 0
   private items:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
   private memoryDataSource : MemoryDataSource = new MemoryDataSource([])
-
-
+  @State repetitions : Repetition[] = []
+  @State test_timestamp : number = Date.now()
+  private memories: HashMap<number, Memory> = new HashMap()
   async aboutToAppear(): Promise<void> {
-    let timeInterval = getTimeInterval(0)
+    //let timeInterval = getTimeInterval(0)
+    //let memories = await memoryManager.getMemoriesByDate(timeInterval.start, timeInterval.end)
 
-    let memories = await memoryManager.getMemoriesByDate(timeInterval.start, timeInterval.end)
-    logger.log(`Fetch memories from database, count to ${memories.length}`)
-    for (let m of memories){
-      this.memoryDataSource.addItem(m)
-    }
+
+    //logger.log(`Fetch memories from database, count to ${memories.length}`)
+    //for (let m of memories){
+    //  this.memoryDataSource.addItem(m)
+    //}
+    this.repetitions = await repetitionManager.getRepetitionsToReview(this.test_timestamp, 5)
+    let ms: Memory[] = await memoryManager.getMemoriesByID(this.repetitions.map(r => r.MEMORY_ID))
+    this.memories = new HashMap()
+    ms.forEach((m, i,a)=>{
+      this.memories.set(m.ID, m)
+    })
+
   }
 
   build() {
@@ -58,15 +70,32 @@ struct ExamplePage {
         }
         .span(LARGE_GRID)
         .backgroundColor(Color.Gray)
+        GridCol(){
+          Button("Test Date +1")
+            .margin({top:'5 vp', bottom: '5 vp'})
+            .onClick(()=>{
+              this.test_timestamp += 1000 * 60 * 60 * 24
+              this.aboutToAppear()
+            })
+        }
+        .span(LARGE_GRID)
+        .backgroundColor(Color.Gray)
 
-        LazyForEach(this.memoryDataSource, (memory:Memory)=>{
+
+        ForEach(this.repetitions, (repetition: Repetition) =>{
           GridCol(){
-            Text(`memory.NAME: ${memory.NAME}`)
-          }
-          .span(LARGE_GRID)
+            Text(`memory.NAME: ${this.memories.get(repetition.MEMORY_ID).NAME}`)
+              .onClick(()=>{
+                router.pushUrl({
+                  url:'pages/Memory',
+                  params:{
+                    memory: JSON.stringify(this.memories.get(repetition.MEMORY_ID))
+                  }
+                })
+              })
+          }.span(LARGE_GRID)
           .border({width:'5vp', color:Color.Red})
-
-        })
+        }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
       }
       .borderWidth('5 vp')
       .borderColor(Color.Red)

@@ -73,7 +73,10 @@ class RepetitionManager{
       return -1;
     }
   }
-
+  public async add_repetition_by_memory_id(memory_id: number){
+    let repetition: Repetition = new Repetition(memory_id)
+    return this.add_repetition(repetition)
+  }
   public async getRepetitions(predicates:relationalStore.RdbPredicates): Promise<Repetition[]>{
     if (!this.rdbStore) return [];
 
@@ -103,7 +106,31 @@ class RepetitionManager{
       return [];
     }
   }
+  public getTomorrowMidnightTimestamp(currentTimestamp: number): number {
+    const today = new Date(currentTimestamp);
 
+    // Create a Date object for tomorrow at 00:00:00 in local time
+    const tomorrowMidnight = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate() + 1, // Add 1 day
+      0,  // Hours = 0 (midnight)
+      0,  // Minutes = 0
+      0,  // Seconds = 0
+      0   // Milliseconds = 0
+    );
+
+    return tomorrowMidnight.getTime();
+  }
+
+  public async getRepetitionsToReview(currentTimestamp: number, size: number){
+    let tomorrowMidnight : number = this.getTomorrowMidnightTimestamp(currentTimestamp)
+    let predicate : relationalStore.RdbPredicates = rdbStoreProvider.createDateRangePredicates(REPETITION_TABLE, 'next_review_timestamp', 0, tomorrowMidnight)
+    predicate.orderByAsc('times_reviewed').orderByDesc('next_review_timestamp')
+    predicate = rdbStoreProvider.applyPaginationClauses(predicate, size, 0)
+
+    return this.getRepetitions(predicate)
+  }
 }
 
 export default RepetitionManager.getInstance()

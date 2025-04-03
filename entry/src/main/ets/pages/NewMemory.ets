@@ -5,6 +5,7 @@ import { BusinessError } from '@kit.BasicServicesKit';
 import {Logger} from '../utils/Logger'
 import { router } from '@kit.ArkUI';
 import memoryManager from '../database/memory/MemoryManager';
+import repetitionManager from '../database/repetition/RepetitionManager'
 import {Memory} from '../entities/Memory'
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 
@@ -87,10 +88,14 @@ struct ExamplePage {
               memory.IS_ENABLED = this.isEnabled
               memory.IMAGES = this.images
               logger.log(`Submit: ${memory}`)
-              await memoryManager.addMemory(memory)
-              router.pushUrl({
-                url: 'pages/Index'
-              })
+              let memory_id = await memoryManager.addMemory(memory)
+              if (memory_id != -1 ){
+                await repetitionManager.add_repetition_by_memory_id(memory_id)
+                router.pushUrl({
+                  url: 'pages/Index'
+                })
+              }
+              //Alert Error
             })
         }
         .span(LARGE_GRID)
