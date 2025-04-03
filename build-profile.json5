@@ -1,0 +1,55 @@
+{
+  "app": {
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\intel\\.ohos\\config\\default_ebbinghaus_v4Kh_rV98NewoEsB7jFZ5JQ7x7OrcUiaBrbzn9P4iY0=.cer",
+          "storePassword": "0000001BCFA5534E5130882C4C2484DE5FADC677E14BCE914EB3341D43A2C77F6EC1A59266107078D673C1",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BD9BEE8F7DF9251BEFA9515E37191A32B3CF47F4C0119E4290606EFA095F0EFCCC0380AE190E083",
+          "profile": "C:\\Users\\intel\\.ohos\\config\\default_ebbinghaus_v4Kh_rV98NewoEsB7jFZ5JQ7x7OrcUiaBrbzn9P4iY0=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\intel\\.ohos\\config\\default_ebbinghaus_v4Kh_rV98NewoEsB7jFZ5JQ7x7OrcUiaBrbzn9P4iY0=.p12"
+        }
+      }
+    ],
+    "products": [
+      {
+        "name": "default",
+        "signingConfig": "default",
+        "compatibleSdkVersion": "5.0.0(12)",
+        "runtimeOS": "HarmonyOS",
+        "buildOption": {
+          "strictMode": {
+            "caseSensitiveCheck": true,
+            "useNormalizedOHMUrl": true
+          }
+        }
+      }
+    ],
+    "buildModeSet": [
+      {
+        "name": "debug",
+      },
+      {
+        "name": "release"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "name": "entry",
+      "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}
