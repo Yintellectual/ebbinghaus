@@ -4,6 +4,9 @@
     "pages/Index",
     "pages/SamplePage",
     "pages/ResponsiveGridSystemSamplePage",
-    "pages/Memory"
+    "pages/Memory",
+    "pages/Management",
+    "pages/Edit",
+    "pages/Delete"
   ]
 }
