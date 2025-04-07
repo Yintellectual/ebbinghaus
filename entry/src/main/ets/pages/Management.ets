@@ -70,9 +70,11 @@ struct ManagementPage{
                 Text(new Date(memory.DATE).toDateString())
                 Row(){
                   Button('Delete').onClick(async ()=>{
-                    await memoryManager.delete(memory.ID)
                     router.pushUrl({
-                      url: 'pages/Management'
+                      url: 'pages/Delete',
+                      params: {
+                        memory: JSON.stringify(memory)
+                      }
                     })
                   }).buttonStyle(ButtonStyleMode.TEXTUAL).fontColor(Color.Red)
                 }

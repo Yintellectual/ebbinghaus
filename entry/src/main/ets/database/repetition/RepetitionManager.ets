@@ -133,10 +133,26 @@ class RepetitionManager{
   }
 
   public async review(memory_id: number){
+    if (!this.rdbStore){
+      logger.log('rdbStore not found')
+      return
+    }
     let repetitions = await this.getRepetitions(new relationalStore.RdbPredicates(REPETITION_TABLE).in('memory_id', [memory_id]))
     let repetition = repetitions[0]
     repetition.review()
-    await this.add_repetition(repetition)
+    const valueBucket: relationalStore.ValuesBucket = {
+      'memory_id': repetition.MEMORY_ID,
+      'last_viewed_timestamp': repetition.LAST_VIEWED_TIMESTAMP,
+      'times_reviewed': repetition.TIMES_REVIEWED,
+      'next_review_timestamp': repetition.NEXT_REVIEWED_TIMESTAMP,
+      'is_activated': repetition.IS_ACTIVATED ? 1 : 0
+    };
+    await this.rdbStore.beginTransaction()
+    await this.rdbStore.update(valueBucket, new relationalStore.RdbPredicates(REPETITION_TABLE).in('memory_id', [memory_id]));
+    await this.rdbStore.commit();
+  }
+  public async getRepetitionByMemoryId(memory_id:number){
+    return this.getRepetitions(new relationalStore.RdbPredicates(REPETITION_TABLE).in('memory_id', [memory_id]))
   }
 }
 

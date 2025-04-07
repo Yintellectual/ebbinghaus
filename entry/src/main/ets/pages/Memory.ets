@@ -32,8 +32,6 @@ struct MemoryDisplayPage {
 
     if (params) {
       this.memory = JSON.parse(params['memory'] as string); // Deserialize if needed
-      logger.log(`${this.memory}`)
-      logger.log(`${this.memory?.NAME}`)
     }
     // for development
     //this.memory = sample

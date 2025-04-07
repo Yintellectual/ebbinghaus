@@ -57,10 +57,14 @@ struct ExamplePage {
       Button("Test Date +1")
         .margin({ top: '5vp', bottom: '5vp' })
         .onClick(() => {
+          logger.log('test date +1')
           this.test_timestamp += 1000 * 60 * 60 * 24
           this.aboutToAppear()
         })
         .position({bottom:'15vp', left : '15vp'})
+        .zIndex(999)
+      Text(`${new Date(this.test_timestamp).toLocaleDateString()}`)
+        .position({bottom:'40vp', right:'15vp'})
       Scroll() {
         GridRow() {
           GridCol() {
