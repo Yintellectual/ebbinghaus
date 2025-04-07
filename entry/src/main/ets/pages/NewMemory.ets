@@ -8,6 +8,7 @@ import memoryManager from '../database/memory/MemoryManager';
 import repetitionManager from '../database/repetition/RepetitionManager'
 import {Memory} from '../entities/Memory'
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
+import { LARGE_GRID } from './utils/Constants';
 
 const DOMAIN = 0x0000;
 const TAG = "crud"
@@ -16,8 +17,7 @@ const logger = new Logger(DOMAIN, TAG, FORMAT)
 
 const URI = "file://media/Photo/4933/IMG_1743007174_4389/screenshot_20250327_003754.png"
 
-const MIDDLE_GRID: GridColColumnOption = {xs:12, sm:6, md:4, lg:3, xl:2, xxl:1}
-const LARGE_GRID: GridColColumnOption = {xs:12, sm:12, md:6, lg:4, xl:3, xxl:2}
+
 const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
 photoSelectOptions.MIMEType = photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE; // 过滤选择媒体文件类型为IMAGE
 photoSelectOptions.maxSelectNumber = 999; // 选择媒体文件的最大数目

@@ -2,12 +2,13 @@ import router from '@ohos.router';
 import { Memory } from '../entities/Memory';
 import {Logger} from '../utils/Logger'
 import repetitionManager from '../database/repetition/RepetitionManager'
+import { LARGE_GRID } from './utils/Constants';
+
 const DOMAIN = 0x0000;
 const TAG = "crud"
 const FORMAT = '%{public}s'
 const logger = new Logger(DOMAIN, TAG, FORMAT)
-const MIDDLE_GRID: GridColColumnOption = {xs:12, sm:6, md:4, lg:3, xl:2, xxl:1}
-const LARGE_GRID: GridColColumnOption = {xs:12, sm:12, md:6, lg:4, xl:3, xxl:2}
+
 
 
 

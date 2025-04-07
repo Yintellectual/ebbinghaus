@@ -1,9 +1,8 @@
 import {image} from '@kit.ImageKit'
 import GridColColumnOption from '@kit.UIDesignKit'
-const URI = "file://media/Photo/4933/IMG_1743007174_4389/screenshot_20250327_003754.png"
+import { LARGE_GRID } from './utils/Constants'
 
-const MIDDLE_GRID: GridColColumnOption = {xs:12, sm:6, md:4, lg:3, xl:2, xxl:1}
-const LARGE_GRID: GridColColumnOption = {xs:12, sm:12, md:6, lg:4, xl:3, xxl:2}
+const URI = "file://media/Photo/4933/IMG_1743007174_4389/screenshot_20250327_003754.png"
 
 
 @Entry

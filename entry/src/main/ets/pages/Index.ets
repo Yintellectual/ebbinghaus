@@ -3,16 +3,15 @@ import GridColColumnOption from '@kit.UIDesignKit'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import {getTimeInterval} from '../utils/get_time_interval'
-import {Logger} from '../utils/Logger'
 import { router } from '@kit.ArkUI';
 import { Memory } from '../entities/Memory';
-
+import {LARGE_GRID} from './utils/Constants'
 import memoryManager from '../database/memory/MemoryManager';
 import { MemoryDataSource } from '../database/memory/datasource/MemoryDataSource';
 import repetitionManager from '../database/repetition/RepetitionManager'
 import { Repetition } from '../entities/Repetition';
 import { HashMap } from '@kit.ArkTS';
-
+import {Logger} from '../utils/Logger'
 const DOMAIN = 0x0000;
 const TAG = "crud"
 const FORMAT = '%{public}s'
@@ -20,8 +19,7 @@ const logger = new Logger(DOMAIN, TAG, FORMAT)
 
 const URI = "file://media/Photo/4933/IMG_1743007174_4389/screenshot_20250327_003754.png"
 
-const MIDDLE_GRID: GridColColumnOption = {xs:12, sm:6, md:4, lg:3, xl:2, xxl:1}
-const LARGE_GRID: GridColColumnOption = {xs:12, sm:12, md:6, lg:4, xl:3, xxl:2}
+
 
 
 
@@ -40,7 +38,6 @@ struct ExamplePage {
     //let timeInterval = getTimeInterval(0)
     //let memories = await memoryManager.getMemoriesByDate(timeInterval.start, timeInterval.end)
 
-
     //logger.log(`Fetch memories from database, count to ${memories.length}`)
     //for (let m of memories){
     //  this.memoryDataSource.addItem(m)
@@ -56,49 +53,63 @@ struct ExamplePage {
 
   build() {
     //experience Text, Button, TextInput, Image, Toggle, Progress
-    Scroll(){
-      GridRow(){
-        //new memory button
-        GridCol(){
-          Button("New Memory")
-            .margin({top:'5 vp', bottom: '5 vp'})
-            .onClick(()=>{
-              router.pushUrl({
-                url: 'pages/NewMemory'
-              })
-            })
-        }
-        .span(LARGE_GRID)
-        .backgroundColor(Color.Gray)
-        GridCol(){
-          Button("Test Date +1")
-            .margin({top:'5 vp', bottom: '5 vp'})
-            .onClick(()=>{
-              this.test_timestamp += 1000 * 60 * 60 * 24
-              this.aboutToAppear()
-            })
-        }
-        .span(LARGE_GRID)
-        .backgroundColor(Color.Gray)
-
-
-        ForEach(this.repetitions, (repetition: Repetition) =>{
-          GridCol(){
-            Text(`memory.NAME: ${this.memories.get(repetition.MEMORY_ID).NAME}`)
-              .onClick(()=>{
+    Stack() {
+      Button("Test Date +1")
+        .margin({ top: '5vp', bottom: '5vp' })
+        .onClick(() => {
+          this.test_timestamp += 1000 * 60 * 60 * 24
+          this.aboutToAppear()
+        })
+        .position({bottom:'15vp', left : '15vp'})
+      Scroll() {
+        GridRow() {
+          GridCol() {
+            Button("Management")
+              .margin({ top: '5 vp', bottom: '5 vp' })
+              .onClick(() => {
                 router.pushUrl({
-                  url:'pages/Memory',
-                  params:{
-                    memory: JSON.stringify(this.memories.get(repetition.MEMORY_ID))
-                  }
+                  url: 'pages/Management'
                 })
               })
-          }.span(LARGE_GRID)
-          .border({width:'5vp', color:Color.Red})
-        }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
+          }
+          .span(LARGE_GRID)
+          .backgroundColor(Color.Gray)
+
+          //new memory button
+          GridCol() {
+            Button("New Memory")
+              .margin({ top: '5 vp', bottom: '5 vp' })
+              .onClick(() => {
+                router.pushUrl({
+                  url: 'pages/NewMemory'
+                })
+              })
+          }
+          .span(LARGE_GRID)
+          .backgroundColor(Color.Gray)
+
+
+          ForEach(this.repetitions, (repetition: Repetition) => {
+            GridCol() {
+              Text(`memory.NAME: ${this.memories?.get(repetition.MEMORY_ID)?.NAME}`)
+                .onClick(() => {
+                  router.pushUrl({
+                    url: 'pages/Memory',
+                    params: {
+                      memory: JSON.stringify(this.memories.get(repetition.MEMORY_ID))
+                    }
+                  })
+                })
+            }.span(LARGE_GRID)
+            .border({ width: '5vp', color: Color.Red })
+          }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
+        }
+        .borderWidth('5 vp')
+        .borderColor(Color.Red)
+        .position({x:0, y:0})
+        .width('100%')
+        .height('100%')
       }
-      .borderWidth('5 vp')
-      .borderColor(Color.Red)
     }
   }
 }
