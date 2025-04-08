@@ -34,7 +34,7 @@ struct ExamplePage {
   @State repetitions : Repetition[] = []
   @State test_timestamp : number = Date.now()
   private memories: HashMap<number, Memory> = new HashMap()
-
+  @State isDataLoaded: boolean = false
   async onPageShow(): Promise<void> {
     //let timeInterval = getTimeInterval(0)
     //let memories = await memoryManager.getMemoriesByDate(timeInterval.start, timeInterval.end)
@@ -50,7 +50,7 @@ struct ExamplePage {
     ms.forEach((m, i,a)=>{
       this.memories.set(m.ID, m)
     })
-
+    this.isDataLoaded = true;
   }
 
   build() {
@@ -97,7 +97,7 @@ struct ExamplePage {
           .span(LARGE_GRID)
           .backgroundColor(Color.Gray)
 
-
+          if(this.isDataLoaded){
           ForEach(this.repetitions, (repetition: Repetition) => {
             GridCol() {
               Text(`memory.NAME: ${this.memories?.get(repetition.MEMORY_ID)?.NAME}`)
@@ -112,7 +112,7 @@ struct ExamplePage {
             }.span(LARGE_GRID)
             .border({ width: '5vp', color: Color.Red })
           }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
-        }
+        }}
         .borderWidth('5 vp')
         .borderColor(Color.Red)
         .position({x:0, y:0})
