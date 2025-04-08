@@ -2,27 +2,27 @@
   "string": [
     {
       "name": "module_desc",
-      "value": "module description"
+      "value": "主要且唯一的模块"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "Automatic spaced repetition memorization app"
+      "value": "间隔重复法记忆APP"
     },
     {
       "name": "EntryAbility_label",
-      "value": "Spaced Repetition"
+      "value": "时时习之"
     },
     {
       "name": "reason_permission_read_image_video",
-      "value": "to store images locally"
+      "value": "本地保存照片（暂时已作废）"
     },
     {
       "name": "reason_permission_distributed_data",
-      "value": "to store data locally"
+      "value": "在本地保存数据包括记忆内容和间隔安排"
     },
     {
       "name": "index_button_management",
-      "value": "Management"
+      "value": "管理记忆"
     }
   ]
 }

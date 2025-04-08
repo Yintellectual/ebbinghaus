@@ -73,7 +73,7 @@ struct ExamplePage {
       Scroll() {
         GridRow() {
           GridCol() {
-            Button("Management")
+            Button($r('app.string.index_button_management'))
               .margin({ top: '5 vp', bottom: '5 vp' })
               .onClick(() => {
                 router.pushUrl({
