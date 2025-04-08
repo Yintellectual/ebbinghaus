@@ -34,7 +34,8 @@ struct ExamplePage {
   @State repetitions : Repetition[] = []
   @State test_timestamp : number = Date.now()
   private memories: HashMap<number, Memory> = new HashMap()
-  async aboutToAppear(): Promise<void> {
+
+  async onPageShow(): Promise<void> {
     //let timeInterval = getTimeInterval(0)
     //let memories = await memoryManager.getMemoriesByDate(timeInterval.start, timeInterval.end)
 
@@ -43,6 +44,7 @@ struct ExamplePage {
     //  this.memoryDataSource.addItem(m)
     //}
     this.repetitions = await repetitionManager.getRepetitionsToReview(this.test_timestamp, 5)
+    logger.log(`get repetitions count to ${this.repetitions.length}`)
     let ms: Memory[] = await memoryManager.getMemoriesByID(this.repetitions.map(r => r.MEMORY_ID))
     this.memories = new HashMap()
     ms.forEach((m, i,a)=>{
@@ -59,12 +61,15 @@ struct ExamplePage {
         .onClick(() => {
           logger.log('test date +1')
           this.test_timestamp += 1000 * 60 * 60 * 24
-          this.aboutToAppear()
+          this.onPageShow()
         })
         .position({bottom:'15vp', left : '15vp'})
         .zIndex(999)
       Text(`${new Date(this.test_timestamp).toLocaleDateString()}`)
         .position({bottom:'40vp', right:'15vp'})
+        .onClick(()=>{
+          this.onPageShow()
+        }).zIndex(999)
       Scroll() {
         GridRow() {
           GridCol() {

@@ -6,29 +6,31 @@ import memoryManager from '../database/memory/MemoryManager'
 import rdbStoreProvider from '../database/RdbStoreProvider'
 import repetitionManager from '../database/repetition/RepetitionManager'
 import { hilog } from '@kit.PerformanceAnalysisKit';
+import {Logger} from '../utils/Logger'
 const DOMAIN = 0x0000;
-const TAG = "KVManager"
+const TAG = "crud"
 const FORMAT = '%{public}s'
+const logger = new Logger(DOMAIN, TAG, FORMAT)
 
 export default class EntryAbility extends UIAbility {
-  async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): Promise<void> {
+  onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
-    hilog.info(DOMAIN, TAG, FORMAT, 'Ability onCreate');
-    KVManagerSingletonWrapper.init(this.context)
-    SampleKVService.getInstance().init()
-    await rdbStoreProvider.init(this.context)
-    await memoryManager.init()
-    await repetitionManager.init()
+    logger.log('Ability onCreate');
+
+
   }
 
   onDestroy(): void {
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onDestroy');
   }
 
-  onWindowStageCreate(windowStage: window.WindowStage): void {
+  async onWindowStageCreate(windowStage: window.WindowStage){
     // Main window is created, set main page for this ability
-    hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
+    logger.log('Ability onWindowStageCreate');
+    await rdbStoreProvider.init(this.context)
+    await memoryManager.init()
+    await repetitionManager.init()
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
         hilog.error(DOMAIN, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));

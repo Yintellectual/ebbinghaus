@@ -34,6 +34,9 @@ struct DeletePage{
       if (this.memory) {
         this.repetition = (await repetitionManager.getRepetitionByMemoryId(this.memory.ID))[0] // Deserialize if needed
       }
+      if(this.repetition){
+
+      }
     }
   }
   build(){
@@ -82,13 +85,16 @@ struct DeletePage{
           }.span(LARGE_GRID).border(RED_BORDER)
 
           GridCol(){
-            Text(`Reviewed ${this.repetition?.TIMES_REVIEWED} times, last reviewed at ${new Date(this.repetition?.LAST_VIEWED_TIMESTAMP).toString()}`)
+            Text(`Reviewed ${this.repetition?.TIMES_REVIEWED} times, `
+              +`last reviewed at `
+              +`${new Date(this.repetition?.LAST_VIEWED_TIMESTAMP).toString()}, `
+              +`next review is at ${new Date(this.repetition?.NEXT_REVIEWED_TIMESTAMP).toString()}, `
+              +`${this.repetition?.NEXT_REVIEWED_TIMESTAMP}`)
               .fontSize('18fp')
               .lineHeight('24fp')
               .textAlign(TextAlign.Start)
               .padding({ top: '5vp', bottom: '10vp' })
           }.span(LARGE_GRID).border(RED_BORDER)
-
 
           ForEach(this.memory?.IMAGES, (image:string)=>{
             GridCol(){

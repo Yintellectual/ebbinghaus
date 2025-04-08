@@ -8,6 +8,9 @@ import rdbStoreProvider from '../../database/RdbStoreProvider'
 import {DB_NAME} from '../../database/RdbStoreProvider'
 import {MEMORY_TABLE} from '../../database/memory/MemoryManager'
 import {Repetition} from '../../entities/Repetition'
+import {LOCALE, TIMEZONE, TIMEZONE_OFFSET} from '../../pages/utils/Constants'
+import { timezone_to_utc, utc_to_timezone } from '../../utils/TimezoneConversion';
+
 const DOMAIN = 0x0000;
 const TAG = "crud"
 const FORMAT = '%{public}s'
@@ -106,25 +109,25 @@ class RepetitionManager{
       return [];
     }
   }
-  public getTomorrowMidnightTimestamp(currentTimestamp: number): number {
-    const today = new Date(currentTimestamp);
-
-    // Create a Date object for tomorrow at 00:00:00 in local time
-    const tomorrowMidnight = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate() + 1, // Add 1 day
-      0,  // Hours = 0 (midnight)
-      0,  // Minutes = 0
-      0,  // Seconds = 0
-      0   // Milliseconds = 0
-    );
-
-    return tomorrowMidnight.getTime();
+  public getTomorrowMidnightTimestamp(current_utc: number): number {
+    const current_local = new Date(utc_to_timezone(TIMEZONE_OFFSET, current_utc))
+    current_local.setUTCMilliseconds(0)
+    current_local.setUTCSeconds(0)
+    current_local.setUTCMinutes(0)
+    current_local.setUTCHours(0)
+    const midnight_local = current_local
+    const tomorrow_midnight_local = midnight_local.getTime() + 24*60*60*1000
+    logger.log(`tomorrow_midnight_local = ${new Date(tomorrow_midnight_local).toISOString()}`)
+    let tomorrow_midnight_local_utc = timezone_to_utc(TIMEZONE_OFFSET, tomorrow_midnight_local);
+    return tomorrow_midnight_local_utc
   }
 
   public async getRepetitionsToReview(currentTimestamp: number, size: number){
-    let tomorrowMidnight : number = this.getTomorrowMidnightTimestamp(currentTimestamp)
+    let tomorrowMidnight : number
+      = this.getTomorrowMidnightTimestamp(currentTimestamp)
+    logger.log(`currentTimestamp = ${new Date(currentTimestamp).toISOString()}`)
+    logger.log(`tomorrowMidNight = ${new Date(tomorrowMidnight).toISOString()}, ${tomorrowMidnight}`)
+
     let predicate : relationalStore.RdbPredicates = rdbStoreProvider.createDateRangePredicates(REPETITION_TABLE, 'next_review_timestamp', 0, tomorrowMidnight)
     predicate.orderByAsc('times_reviewed').orderByDesc('next_review_timestamp')
     predicate = rdbStoreProvider.applyPaginationClauses(predicate, size, 0)
