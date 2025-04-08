@@ -23,6 +23,10 @@
     {
       "name": "index_button_management",
       "value": "管理记忆"
+    },
+    {
+      "name": "index_button_new_memory",
+      "value": "添加记忆"
     }
   ]
 }

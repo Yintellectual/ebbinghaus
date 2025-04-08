@@ -23,6 +23,10 @@
     {
       "name": "index_button_management",
       "value": "Management"
+    },
+    {
+      "name": "index_button_new_memory",
+      "value": "New Memory"
     }
   ]
 }

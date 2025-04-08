@@ -62,12 +62,11 @@ struct ExamplePage {
           logger.log('test date +1')
           this.test_timestamp += 1000 * 60 * 60 * 24
           this.onPageShow()
-        })
-        .position({bottom:'15vp', left : '15vp'})
-        .zIndex(999)
+        }).zIndex(999)
+        .position({ bottom: '15vp', left: '15vp' })
       Text(`${new Date(this.test_timestamp).toLocaleDateString()}`)
-        .position({bottom:'40vp', right:'15vp'})
-        .onClick(()=>{
+        .position({ bottom: '40vp', right: '15vp' })
+        .onClick(() => {
           this.onPageShow()
         }).zIndex(999)
       Scroll() {
@@ -82,11 +81,11 @@ struct ExamplePage {
               })
           }
           .span(LARGE_GRID)
-          .backgroundColor(Color.Gray)
+          .backgroundColor($r('app.color.background'))
 
           //new memory button
           GridCol() {
-            Button("New Memory")
+            Button($r('app.string.index_button_new_memory'))
               .margin({ top: '5 vp', bottom: '5 vp' })
               .onClick(() => {
                 router.pushUrl({
@@ -95,26 +94,32 @@ struct ExamplePage {
               })
           }
           .span(LARGE_GRID)
-          .backgroundColor(Color.Gray)
+          .backgroundColor($r('app.color.background'))
 
           if(this.isDataLoaded){
-          ForEach(this.repetitions, (repetition: Repetition) => {
-            GridCol() {
-              Text(`memory.NAME: ${this.memories?.get(repetition.MEMORY_ID)?.NAME}`)
-                .onClick(() => {
-                  router.pushUrl({
-                    url: 'pages/Memory',
-                    params: {
-                      memory: JSON.stringify(this.memories.get(repetition.MEMORY_ID))
-                    }
+            ForEach(this.repetitions, (repetition: Repetition) => {
+              GridCol() {
+                Text(`${this.memories?.get(repetition.MEMORY_ID)?.NAME}`)
+                  .fontSize('20vp')
+                  .fontWeight(FontWeight.Bold)
+                  .fontColor(Color.White)
+                  .padding({ top: '20vp', bottom: '10vp'})
+                  .onClick(() => {
+                    router.pushUrl({
+                      url: 'pages/Memory',
+                      params: {
+                        memory: JSON.stringify(this.memories.get(repetition.MEMORY_ID))
+                      }
+                    })
                   })
-                })
-            }.span(LARGE_GRID)
-            .border({ width: '5vp', color: Color.Red })
-          }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
-        }}
-        .borderWidth('5 vp')
-        .borderColor(Color.Red)
+
+              }.span(LARGE_GRID)
+              .border({width: {top: '2vp'}, color: $r('app.color.static') })
+              .padding({left: '20vp', right:'20vp'})
+              .backgroundColor($r('app.color.dynamic'))
+            }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
+          }
+        }
         .position({x:0, y:0})
         .width('100%')
         .height('100%')

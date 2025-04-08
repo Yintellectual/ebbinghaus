@@ -3,6 +3,15 @@
     {
       "name": "start_window_background",
       "value": "#FFFFFF"
+    },{
+      "name": "background",
+      "value": "#E8F0F7"
+    },{
+      "name": "static",
+      "value": "#8A9A8B"
+    },{
+      "name": "dynamic",
+      "value": "#FFB6A3"
     }
   ]
 }
