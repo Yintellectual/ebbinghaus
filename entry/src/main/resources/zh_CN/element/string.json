@@ -45,6 +45,9 @@
     },{
       "name": "common_button_submit",
       "value": "提交"
+    },{
+      "name": "common_button_details",
+      "value": "详情"
     }
   ]
 }

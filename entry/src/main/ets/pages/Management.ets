@@ -50,40 +50,31 @@ struct ManagementPage{
   build(){
     Scroll(){
       Stack(){
-        Flex(){
-          CommonButton({
-            label:$r('app.string.common_button_home')
-          }).onClick(()=>{
-            router.pushUrl({
-              url: 'pages/Index'
-            })
-          }).position({right:'10%', bottom:'15%'})
-        }.border({
-          width: '1 vp',
-          color: Color.Red
-        })
-        .width('100%')
-        .height('100%')
-
         GridRow(){
           ForEach(this.memories, (memory:Memory)=>{
             GridCol(){
               Column(){
                 Text(memory.NAME)
-                Text(new Date(memory.DATE).toDateString())
-                Row(){
-                  Button($r('app.string.common_button_delete')).onClick(async ()=>{
+                  .fontSize('15vp')
+                  .fontWeight(FontWeight.Bold)
+                Flex({direction: FlexDirection.RowReverse,
+                alignItems: ItemAlign.Center}){
+                  CommonButton({label:$r('app.string.common_button_details')})
+                    .onClick(async ()=>{
                     router.pushUrl({
                       url: 'pages/Delete',
                       params: {
                         memory: JSON.stringify(memory)
                       }
                     })
-                  }).buttonStyle(ButtonStyleMode.TEXTUAL).fontColor(Color.Red)
+                  })
+                  Text(new Date(memory.DATE).toLocaleDateString())
+                    .textAlign(TextAlign.Center)
                 }
               }
             }.span(LARGE_GRID)
-            .border({width:'5vp', color:Color.Red})
+            .backgroundColor($r('app.color.background'))
+            .border({width:{top:'2vp'}, color:$r('app.color.static')})
           }, (memory:Memory)=> `${memory.ID}`)
         }
       }
