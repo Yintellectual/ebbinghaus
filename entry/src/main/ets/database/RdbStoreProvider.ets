@@ -20,7 +20,8 @@ const STORE_CONFIG :relationalStore.StoreConfig= {
   name: DB_NAME, // 数据库文件名
   securityLevel: relationalStore.SecurityLevel.S1, // 数据库安全级别
   encrypt: false, // 可选参数，指定数据库是否加密，默认不加密
-  isReadOnly: false // 可选参数，指定数据库是否以只读方式打开。该参数默认为false，表示数据库可读可写。该参数为true时，只允许从数据库读取数据，不允许对数据库进行写操作，否则会返回错误码801。
+  isReadOnly: false, // 可选参数，指定数据库是否以只读方式打开。该参数默认为false，表示数据库可读可写。该参数为true时，只允许从数据库读取数据，不允许对数据库进行写操作，否则会返回错误码801。
+  
 };
 
 class RdbStoreProvider{

@@ -137,9 +137,18 @@ class MemoryManager{
     return this.getMemories(new relationalStore.RdbPredicates(MEMORY_TABLE).in('ID', ids))
   }
 
-  public async delete(id: number){
+  public async delete(memory_id: number){
+    this.deleteImages
+    this.delete_memory(memory_id)
+  }
+  public async delete_memory(id: number){
     let predicate : relationalStore.RdbPredicates = new relationalStore.RdbPredicates(MEMORY_TABLE)
     predicate.in('ID', [id])
+    await this.rdbStore?.delete(predicate)
+  }
+  public async deleteImages(memory_id: number){
+    let predicate: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(IMAGE_TABLE)
+    predicate.in('MEMORY_ID', [memory_id])
     await this.rdbStore?.delete(predicate)
   }
 }

@@ -157,6 +157,11 @@ class RepetitionManager{
   public async getRepetitionByMemoryId(memory_id:number){
     return this.getRepetitions(new relationalStore.RdbPredicates(REPETITION_TABLE).in('memory_id', [memory_id]))
   }
+  public async delete(memory_id:number){
+    let predicate: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(REPETITION_TABLE)
+    predicate.in('memory_id', [memory_id])
+    await this.rdbStore?.delete(predicate)
+  }
 }
 
 export default RepetitionManager.getInstance()

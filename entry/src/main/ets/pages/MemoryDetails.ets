@@ -27,7 +27,14 @@ struct DeletePage{
   @State memory: Memory | undefined= undefined
   @State repetition : Repetition | undefined = undefined
   @State delete_lock: boolean = false
-
+  @State @Watch('routeToManagement') isDeleted: boolean = false
+  routeToManagement(){
+    if(this.isDeleted) {
+      router.pushUrl({
+        url: 'pages/Management'
+      })
+    }
+  }
   async onPageShow(): Promise<void> {
     const params = router.getParams() as Record<string, string | number | object>;
 
@@ -66,9 +73,8 @@ struct DeletePage{
           .onClick(async () => {
             if (this.memory) {
               await memoryManager.delete(this.memory.ID)
-              router.pushUrl({
-                url: 'pages/Management'
-              })
+              await repetitionManager.delete(this.memory.ID)
+              this.isDeleted = true
             }
           })
           .zIndex(999)

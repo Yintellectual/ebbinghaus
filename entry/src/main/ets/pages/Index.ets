@@ -54,12 +54,21 @@ struct ExamplePage {
     //}
     this.daily_review_limit = preferencesService.getDailyReviewLimit()
     this.repetitions = await repetitionManager.getRepetitionsToReview(this.test_timestamp, this.daily_review_limit)
+
+
     logger.log(`get repetitions count to ${this.repetitions.length}`)
     let ms: Memory[] = await memoryManager.getMemoriesByID(this.repetitions.map(r => r.MEMORY_ID))
     this.memories = new HashMap()
     ms.forEach((m, i,a)=>{
       this.memories.set(m.ID, m)
     })
+    // //empty_trash
+    // this.repetitions.forEach((r,i,a)=>{
+    //   if(!this.memories.get(r.MEMORY_ID)){
+    //     repetitionManager.delete(r.MEMORY_ID)
+    //   }
+    // })
+
     this.isDataLoaded = true;
   }
 
