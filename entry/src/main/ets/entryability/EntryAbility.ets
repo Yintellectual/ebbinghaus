@@ -4,6 +4,7 @@ import {KVManagerSingletonWrapper} from '../database/KVManagerSingletonWrapper'
 import {SampleKVService} from '../database/SampleKVService'
 import memoryManager from '../database/memory/MemoryManager'
 import rdbStoreProvider from '../database/RdbStoreProvider'
+import preferencesService from '../database/PreferencesService'
 import repetitionManager from '../database/repetition/RepetitionManager'
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import {Logger} from '../utils/Logger'
@@ -28,6 +29,7 @@ export default class EntryAbility extends UIAbility {
     // Main window is created, set main page for this ability
 
     logger.log('Ability onWindowStageCreate');
+    preferencesService.init(this.context)
     await rdbStoreProvider.init(this.context)
     await memoryManager.init()
     await repetitionManager.init()

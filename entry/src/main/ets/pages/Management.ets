@@ -4,7 +4,7 @@ import memoryManager from '../database/memory/MemoryManager'
 import { router } from '@kit.ArkUI';
 import { LARGE_GRID } from './utils/Constants';
 import { CommonButton } from '../components/CommonButton';
-
+import preferencesService from '../database/PreferencesService'
 const DOMAIN = 0x0000;
 const TAG = "crud"
 const FORMAT = '%{public}s'
@@ -42,15 +42,59 @@ const samples = [sample1, sample2, sample3]
 @Component
 struct ManagementPage{
   @State memories: Memory[] = []
-
+  @State @Watch('onCount') count:number = 0
   async aboutToAppear(): Promise<void> {
     this.memories = await memoryManager.getMemoriesByDate(0, Date.now())
+    this.count = preferencesService.getDailyReviewLimit()
   }
-
+  onCount (){
+    preferencesService.updateDailyReviewLimit(this.count)
+  }
   build(){
     Scroll(){
       Stack(){
         GridRow(){
+          GridCol(){
+            Text("Manage Memories")
+              .fontSize('24fp')
+              .fontColor(Color.White)
+
+          }.span(LARGE_GRID)
+          .backgroundColor($r('app.color.static'))
+          .border({width:{top:'2vp'}, color:$r('app.color.static')})
+
+          GridCol(){
+            Flex({direction: FlexDirection.Column}){
+              Text("Daily Review Limit")
+                .fontSize('20fp')
+                .fontWeight(FontWeight.Bold)
+                .alignSelf(ItemAlign.Center)
+              Counter(){
+                Text(`${this.count}`)
+              }
+              .onInc(()=>{
+                this.count += 1
+              })
+              .onDec(()=>{
+                this.count -= 1
+              }).alignSelf(ItemAlign.Center)
+              .margin('5vp')
+            }
+          }.span(LARGE_GRID)
+          .backgroundColor($r('app.color.background'))
+          .padding({top:'10vp'})
+          .border({width:{top:'2vp'}, color:$r('app.color.static')})
+
+          GridCol(){
+            Text("Memory List")
+              .fontSize('20fp')
+              .fontWeight(FontWeight.Bold)
+              .alignSelf(ItemAlign.Center)
+          }.span(LARGE_GRID)
+          .backgroundColor($r('app.color.background'))
+          .padding({top:'10vp', bottom:'5vp'})
+          .border({width:{top:'2vp'}, color:$r('app.color.static')})
+
           ForEach(this.memories, (memory:Memory)=>{
             GridCol(){
               Column(){
@@ -62,7 +106,7 @@ struct ManagementPage{
                   CommonButton({label:$r('app.string.common_button_details')})
                     .onClick(async ()=>{
                     router.pushUrl({
-                      url: 'pages/Delete',
+                      url: 'pages/MemoryDetails',
                       params: {
                         memory: JSON.stringify(memory)
                       }
@@ -73,7 +117,7 @@ struct ManagementPage{
                 }
               }
             }.span(LARGE_GRID)
-            .backgroundColor($r('app.color.background'))
+            .backgroundColor($r('app.color.dynamic'))
             .border({width:{top:'2vp'}, color:$r('app.color.static')})
           }, (memory:Memory)=> `${memory.ID}`)
         }

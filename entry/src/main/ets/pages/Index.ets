@@ -13,6 +13,7 @@ import { Repetition } from '../entities/Repetition';
 import { HashMap } from '@kit.ArkTS';
 import {Logger} from '../utils/Logger'
 import { CommonButton } from '../components/CommonButton';
+import preferencesService from '../database/PreferencesService'
 
 const DOMAIN = 0x0000;
 const TAG = "crud"
@@ -35,6 +36,7 @@ struct ExamplePage {
   private memoryDataSource : MemoryDataSource = new MemoryDataSource([])
   @State @Watch('onRepetitionUpdated') repetitions : Repetition[] = []
   @State isDailyReviewSuccessful: boolean = false
+  @State daily_review_limit:number = 10
   onRepetitionUpdated(){
     logger.log(`watch callback function is triggered, boolean = ${this.repetitions.length === 0}`)
     this.isDailyReviewSuccessful =  this.repetitions.length === 0
@@ -50,7 +52,8 @@ struct ExamplePage {
     //for (let m of memories){
     //  this.memoryDataSource.addItem(m)
     //}
-    this.repetitions = await repetitionManager.getRepetitionsToReview(this.test_timestamp, 5)
+    this.daily_review_limit = preferencesService.getDailyReviewLimit()
+    this.repetitions = await repetitionManager.getRepetitionsToReview(this.test_timestamp, this.daily_review_limit)
     logger.log(`get repetitions count to ${this.repetitions.length}`)
     let ms: Memory[] = await memoryManager.getMemoriesByID(this.repetitions.map(r => r.MEMORY_ID))
     this.memories = new HashMap()
@@ -118,19 +121,18 @@ struct ExamplePage {
                     .fontWeight(FontWeight.Bold)
                     .fontColor(Color.White)
                     .padding({ top: '20vp', bottom: '10vp'})
-                    .onClick(() => {
-                      router.pushUrl({
-                        url: 'pages/Memory',
-                        params: {
-                          memory: JSON.stringify(this.memories.get(repetition.MEMORY_ID))
-                        }
-                      })
-                    })
-
                 }.span(LARGE_GRID)
                 .border({width: {top: '2vp'}, color: $r('app.color.static') })
                 .padding({left: '20vp', right:'20vp'})
                 .backgroundColor($r('app.color.dynamic'))
+                .onClick(() => {
+                  router.pushUrl({
+                    url: 'pages/Memory',
+                    params: {
+                      memory: JSON.stringify(this.memories.get(repetition.MEMORY_ID))
+                    }
+                  })
+                })
               }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
             }else{
               GridCol() {

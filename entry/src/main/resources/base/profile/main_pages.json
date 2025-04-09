@@ -7,6 +7,6 @@
     "pages/Memory",
     "pages/Management",
     "pages/Edit",
-    "pages/Delete"
+    "pages/MemoryDetails"
   ]
 }
