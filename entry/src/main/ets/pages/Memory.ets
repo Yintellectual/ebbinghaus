@@ -50,17 +50,21 @@ struct MemoryDisplayPage {
             .textAlign(TextAlign.Center)
             .padding({ top: '10vp', bottom: '10vp' })
         }.span(LARGE_GRID)
-        .border({width:{top:'1vp'}, color:{top:Color.Gray}})
+        .backgroundColor($r('app.color.background'))
+        .border({width:{top:'1vp'}, color:{top:$r('app.color.static')}})
 
         //description
-        GridCol() {
-          Text(this.memory?.DESCRIPTION)
-            .fontSize('18fp')
-            .lineHeight('24fp')
-            .textAlign(TextAlign.Start)
-            .padding({ top: '5vp', bottom: '10vp' })
-        }.span(LARGE_GRID)
-        .border({width:{top:'1vp'}, color:{top:Color.Gray}})
+        if(this.memory?.DESCRIPTION){
+          GridCol() {
+            Text(this.memory?.DESCRIPTION)
+              .fontSize('18fp')
+              .lineHeight('24fp')
+              .textAlign(TextAlign.Start)
+              .padding({ top: '5vp', bottom: '10vp' })
+          }.span(LARGE_GRID)
+          .backgroundColor($r('app.color.background'))
+          .border({width:{top:'1vp'}, color:{top:$r('app.color.static')}})
+        }
 
         //Images
         ForEach(this.memory?.IMAGES, (image: string)=>{
@@ -72,8 +76,7 @@ struct MemoryDisplayPage {
                 .margin({ bottom: 10 });
             }
           }.span(LARGE_GRID)
-          .backgroundColor(Color.Gray)
-          .border({width:{top:'5vp'}, color:{top:Color.Red}})
+          .border({width:{top:'1vp'}, color:{top:$r('app.color.static')}})
         }, (image: string)=>image)
 
         GridCol() {
@@ -89,7 +92,8 @@ struct MemoryDisplayPage {
               }
             })
         }.span(LARGE_GRID)
-        .border({width:{top:'1vp'}, color:{top:Color.Gray}})
+        .backgroundColor($r('app.color.background'))
+        .border({width:{top:'1vp'}, color:{top:$r('app.color.static')}})
 
       }
     }
