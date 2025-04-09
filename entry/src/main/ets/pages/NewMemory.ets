@@ -95,9 +95,7 @@ struct ExamplePage {
               let memory_id = await memoryManager.addMemory(memory)
               if (memory_id != -1 ){
                 await repetitionManager.add_repetition_by_memory_id(memory_id)
-                router.pushUrl({
-                  url: 'pages/Index'
-                })
+                router.back()
               }
               //Alert Error
             })

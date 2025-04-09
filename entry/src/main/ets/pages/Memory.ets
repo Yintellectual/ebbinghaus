@@ -86,9 +86,7 @@ struct MemoryDisplayPage {
             .onClick(async ()=>{
               if(this.memory){
                 await repetitionManager.review(this.memory.ID)
-                router.pushUrl({
-                  url:'pages/Index'
-                })
+                router.back()
               }
             })
         }.span(LARGE_GRID)

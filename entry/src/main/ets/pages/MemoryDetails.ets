@@ -30,9 +30,7 @@ struct DeletePage{
   @State @Watch('routeToManagement') isDeleted: boolean = false
   routeToManagement(){
     if(this.isDeleted) {
-      router.pushUrl({
-        url: 'pages/Management'
-      })
+      router.back()
     }
   }
   async onPageShow(): Promise<void> {
