@@ -50,7 +50,7 @@ struct DeletePage{
       }
 
       if(this.memory) {
-        Button('Delete')
+        Button($r('app.string.common_button_delete'))
           .buttonStyle(ButtonStyleMode.EMPHASIZED)
           .fontColor(Color.Red)
           .position({ left: '15vp', bottom: '15vp' })

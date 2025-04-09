@@ -3,6 +3,7 @@ import { Memory } from '../entities/Memory';
 import {Logger} from '../utils/Logger'
 import repetitionManager from '../database/repetition/RepetitionManager'
 import { LARGE_GRID } from './utils/Constants';
+import { CommonButton } from '../components/CommonButton';
 
 const DOMAIN = 0x0000;
 const TAG = "crud"
@@ -40,18 +41,6 @@ struct MemoryDisplayPage {
   build() {
     Scroll() {
       GridRow() {
-        GridCol() {
-          Button("Reviewed")
-            .onClick(async ()=>{
-              if(this.memory){
-                await repetitionManager.review(this.memory.ID)
-                router.pushUrl({
-                  url:'pages/Index'
-                })
-              }
-            })
-        }.span(LARGE_GRID)
-        .border({width:{top:'1vp'}, color:{top:Color.Gray}})
 
         //name, make it bigger as title
         GridCol() {
@@ -86,6 +75,22 @@ struct MemoryDisplayPage {
           .backgroundColor(Color.Gray)
           .border({width:{top:'5vp'}, color:{top:Color.Red}})
         }, (image: string)=>image)
+
+        GridCol() {
+          CommonButton({
+            label: $r('app.string.memory_button_reviewed')
+          })
+            .onClick(async ()=>{
+              if(this.memory){
+                await repetitionManager.review(this.memory.ID)
+                router.pushUrl({
+                  url:'pages/Index'
+                })
+              }
+            })
+        }.span(LARGE_GRID)
+        .border({width:{top:'1vp'}, color:{top:Color.Gray}})
+
       }
     }
   }

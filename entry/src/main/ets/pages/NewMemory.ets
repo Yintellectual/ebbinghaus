@@ -9,6 +9,7 @@ import repetitionManager from '../database/repetition/RepetitionManager'
 import {Memory} from '../entities/Memory'
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import { LARGE_GRID } from './utils/Constants';
+import { CommonButton } from '../components/CommonButton';
 
 const DOMAIN = 0x0000;
 const TAG = "crud"
@@ -70,7 +71,9 @@ struct ExamplePage {
         }.span(LARGE_GRID)
         .border({width:{top:'1vp'}, color:{top:Color.Gray}})
         GridCol(){
-          Button("Pick Images")
+          CommonButton({
+            label: $r('app.string.common_button_pick_images')
+          })
             .onClick(async ()=>{
               this.images = this.images.concat(await pick_pictures())
               //logger.log(`this.images, ${this.images} : ${this.images.length}  `)
@@ -78,8 +81,9 @@ struct ExamplePage {
         }.span(LARGE_GRID)
         .border({width:{top:'1vp'}, color:{top:Color.Gray}})
         GridCol() {
-          Button("Submit")
-            .margin({ top: '5 vp', bottom: '5 vp' })
+          CommonButton({
+            label: $r('app.string.common_button_submit')
+          })
             .onClick(async () => {
               let memory: Memory = new Memory()
               memory.NAME = this.name

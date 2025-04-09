@@ -3,6 +3,7 @@ import {Logger} from '../utils/Logger'
 import memoryManager from '../database/memory/MemoryManager'
 import { router } from '@kit.ArkUI';
 import { LARGE_GRID } from './utils/Constants';
+import { CommonButton } from '../components/CommonButton';
 
 const DOMAIN = 0x0000;
 const TAG = "crud"
@@ -50,7 +51,9 @@ struct ManagementPage{
     Scroll(){
       Stack(){
         Flex(){
-          Button('Home').onClick(()=>{
+          CommonButton({
+            label:$r('app.string.common_button_home')
+          }).onClick(()=>{
             router.pushUrl({
               url: 'pages/Index'
             })
@@ -69,7 +72,7 @@ struct ManagementPage{
                 Text(memory.NAME)
                 Text(new Date(memory.DATE).toDateString())
                 Row(){
-                  Button('Delete').onClick(async ()=>{
+                  Button($r('app.string.common_button_delete')).onClick(async ()=>{
                     router.pushUrl({
                       url: 'pages/Delete',
                       params: {

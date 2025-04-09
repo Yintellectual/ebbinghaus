@@ -12,6 +12,8 @@ import repetitionManager from '../database/repetition/RepetitionManager'
 import { Repetition } from '../entities/Repetition';
 import { HashMap } from '@kit.ArkTS';
 import {Logger} from '../utils/Logger'
+import { CommonButton } from '../components/CommonButton';
+
 const DOMAIN = 0x0000;
 const TAG = "crud"
 const FORMAT = '%{public}s'
@@ -61,9 +63,9 @@ struct ExamplePage {
   build() {
     //experience Text, Button, TextInput, Image, Toggle, Progress
     Stack() {
-      Button("Test Date +1")
-        .backgroundColor($r('app.color.static'))
-        .margin({ top: '5vp', bottom: '5vp' })
+      CommonButton({
+        label: "Test Date +1"
+      })
         .onClick(() => {
           logger.log('test date +1')
           this.test_timestamp += 1000 * 60 * 60 * 24
@@ -79,17 +81,17 @@ struct ExamplePage {
         GridRow() {
           GridCol() {
             Flex({ direction: FlexDirection.RowReverse}){
-              Button($r('app.string.index_button_management'))
-                .backgroundColor($r('app.color.static'))
-                .margin({ top: '5 vp', bottom: '5 vp' })
+              CommonButton({
+                label: $r('app.string.index_button_management')
+              })
                 .onClick(() => {
                   router.pushUrl({
                     url: 'pages/Management'
                   })
                 })
-              Button($r('app.string.index_button_new_memory'))
-                .backgroundColor($r('app.color.static'))
-                .margin({ top: '5 vp', bottom: '5 vp' })
+              CommonButton({
+                label: $r('app.string.index_button_new_memory')
+              })
                 .onClick(() => {
                   router.pushUrl({
                     url: 'pages/NewMemory'

@@ -30,6 +30,21 @@
     },{
       "name": "index_celebration_for_daily_review_success",
       "value": "Congratulations on finishing today's review tasks! You did an amazing job!"
+    },{
+      "name": "common_button_delete",
+      "value": "delete"
+    },{
+      "name": "common_button_home",
+      "value": "Home"
+    },{
+      "name": "memory_button_reviewed",
+      "value": "Reviewed"
+    }, {
+      "name": "common_button_pick_images",
+      "value":"Pick Images"
+    },{
+      "name": "common_button_submit",
+      "value": "Submit"
     }
   ]
 }
