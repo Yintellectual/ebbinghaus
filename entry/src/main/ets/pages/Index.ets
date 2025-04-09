@@ -31,7 +31,12 @@ struct ExamplePage {
   @State progress: number = 0
   private items:string[] = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
   private memoryDataSource : MemoryDataSource = new MemoryDataSource([])
-  @State repetitions : Repetition[] = []
+  @State @Watch('onRepetitionUpdated') repetitions : Repetition[] = []
+  @State isDailyReviewSuccessful: boolean = false
+  onRepetitionUpdated(){
+    logger.log(`watch callback function is triggered, boolean = ${this.repetitions.length === 0}`)
+    this.isDailyReviewSuccessful =  this.repetitions.length === 0
+  }
   @State test_timestamp : number = Date.now()
   private memories: HashMap<number, Memory> = new HashMap()
   @State isDataLoaded: boolean = false
@@ -57,6 +62,7 @@ struct ExamplePage {
     //experience Text, Button, TextInput, Image, Toggle, Progress
     Stack() {
       Button("Test Date +1")
+        .backgroundColor($r('app.color.static'))
         .margin({ top: '5vp', bottom: '5vp' })
         .onClick(() => {
           logger.log('test date +1')
@@ -72,52 +78,75 @@ struct ExamplePage {
       Scroll() {
         GridRow() {
           GridCol() {
-            Button($r('app.string.index_button_management'))
-              .margin({ top: '5 vp', bottom: '5 vp' })
-              .onClick(() => {
-                router.pushUrl({
-                  url: 'pages/Management'
+            Flex({ direction: FlexDirection.RowReverse}){
+              Button($r('app.string.index_button_management'))
+                .backgroundColor($r('app.color.static'))
+                .margin({ top: '5 vp', bottom: '5 vp' })
+                .onClick(() => {
+                  router.pushUrl({
+                    url: 'pages/Management'
+                  })
                 })
-              })
+              Button($r('app.string.index_button_new_memory'))
+                .backgroundColor($r('app.color.static'))
+                .margin({ top: '5 vp', bottom: '5 vp' })
+                .onClick(() => {
+                  router.pushUrl({
+                    url: 'pages/NewMemory'
+                  })
+                })
+            }
           }
           .span(LARGE_GRID)
           .backgroundColor($r('app.color.background'))
 
           //new memory button
           GridCol() {
-            Button($r('app.string.index_button_new_memory'))
-              .margin({ top: '5 vp', bottom: '5 vp' })
-              .onClick(() => {
-                router.pushUrl({
-                  url: 'pages/NewMemory'
-                })
-              })
+
           }
           .span(LARGE_GRID)
           .backgroundColor($r('app.color.background'))
 
           if(this.isDataLoaded){
-            ForEach(this.repetitions, (repetition: Repetition) => {
+            if(!this.isDailyReviewSuccessful){
+              ForEach(this.repetitions, (repetition: Repetition) => {
+                GridCol() {
+                  Text(`${this.memories?.get(repetition.MEMORY_ID)?.NAME}`)
+                    .fontSize('20vp')
+                    .fontWeight(FontWeight.Bold)
+                    .fontColor(Color.White)
+                    .padding({ top: '20vp', bottom: '10vp'})
+                    .onClick(() => {
+                      router.pushUrl({
+                        url: 'pages/Memory',
+                        params: {
+                          memory: JSON.stringify(this.memories.get(repetition.MEMORY_ID))
+                        }
+                      })
+                    })
+
+                }.span(LARGE_GRID)
+                .border({width: {top: '2vp'}, color: $r('app.color.static') })
+                .padding({left: '20vp', right:'20vp'})
+                .backgroundColor($r('app.color.dynamic'))
+              }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
+            }else{
               GridCol() {
-                Text(`${this.memories?.get(repetition.MEMORY_ID)?.NAME}`)
+                Text($r('app.string.index_celebration_for_daily_review_success'))
                   .fontSize('20vp')
                   .fontWeight(FontWeight.Bold)
                   .fontColor(Color.White)
                   .padding({ top: '20vp', bottom: '10vp'})
                   .onClick(() => {
-                    router.pushUrl({
-                      url: 'pages/Memory',
-                      params: {
-                        memory: JSON.stringify(this.memories.get(repetition.MEMORY_ID))
-                      }
-                    })
+                    //maybe some animation for celebration
+                    logger.log(`${this.repetitions.length}`)
                   })
 
               }.span(LARGE_GRID)
               .border({width: {top: '2vp'}, color: $r('app.color.static') })
               .padding({left: '20vp', right:'20vp'})
               .backgroundColor($r('app.color.dynamic'))
-            }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
+            }
           }
         }
         .position({x:0, y:0})

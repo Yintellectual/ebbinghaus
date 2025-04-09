@@ -27,6 +27,9 @@
     {
       "name": "index_button_new_memory",
       "value": "New Memory"
+    },{
+      "name": "index_celebration_for_daily_review_success",
+      "value": "Congratulations on finishing today's review tasks! You did an amazing job!"
     }
   ]
 }

@@ -27,6 +27,9 @@
     {
       "name": "index_button_new_memory",
       "value": "添加记忆"
+    },{
+      "name": "index_celebration_for_daily_review_success",
+      "value": "恭喜你完成了今天的复习任务，真是太棒了！"
     }
   ]
 }
