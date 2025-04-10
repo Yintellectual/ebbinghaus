@@ -4,6 +4,7 @@ import {Logger} from '../utils/Logger'
 import repetitionManager from '../database/repetition/RepetitionManager'
 import { LARGE_GRID } from './utils/Constants';
 import { CommonButton } from '../components/CommonButton';
+import { common } from '@kit.AbilityKit';
 
 const DOMAIN = 0x0000;
 const TAG = "crud"
@@ -23,10 +24,13 @@ sample.IMAGES = ["file://media/Photo/4895/IMG_1742799186_4364/IMG_20250324_14512
 
 
 
+
 @Entry
 @Component
 struct MemoryDisplayPage {
   private memory: Memory | null = null;
+  private context = getContext() as common.UIAbilityContext
+  private uris: string[] = []
   aboutToAppear() {
     // Get parameters from the navigation
     const params = router.getParams() as Record<string, string | number | object>;
@@ -34,14 +38,25 @@ struct MemoryDisplayPage {
     if (params) {
       this.memory = JSON.parse(params['memory'] as string); // Deserialize if needed
     }
+    if(this.memory){
+      this.uris = this.extract_uris(this.memory?.DESCRIPTION)
+    }
     // for development
     //this.memory = sample
   }
 
+  private extract_uris(content: string){
+    const regex_for_uri = /\b[a-zA-Z][a-zA-Z0-9+.-]*:\/\/[^\/\s?#]+\S*/g
+    const matches = content.matchAll(regex_for_uri)
+    let uris: string[] = []
+    for(const match of matches){
+      uris.push(match[0])
+    }
+    return uris
+  }
   build() {
     Scroll() {
       GridRow() {
-
         //name, make it bigger as title
         GridCol() {
           Text(this.memory?.NAME)
@@ -55,6 +70,23 @@ struct MemoryDisplayPage {
 
         //description
         if(this.memory?.DESCRIPTION){
+          GridCol(){
+            Column() {
+              ForEach(this.uris, (uri:string)=>{
+                Hyperlink(uri)
+                  .size({
+                    height:'24vp'
+                  })
+                  .onClick(()=>{
+                    this.context.openLink(uri)
+                  })
+                  .margin({ top: '10vp', bottom: '10vp' })
+              }, (uri:string)=>uri)
+            }
+          }.span(LARGE_GRID)
+          .backgroundColor($r('app.color.background'))
+          .border({width:{top:'1vp'}, color:{top:$r('app.color.static')}})
+
           GridCol() {
             Text(this.memory?.DESCRIPTION)
               .fontSize('18fp')
