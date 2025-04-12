@@ -74,57 +74,43 @@ struct ExamplePage {
   build() {
     //experience Text, Button, TextInput, Image, Toggle, Progress
     Stack() {
-      CommonButton({
-        label: "Test Date +1"
-      })
-        .onClick(() => {
-          logger.log('test date +1')
-          this.test_timestamp += 1000 * 60 * 60 * 24
-          this.onPageShow()
-        }).zIndex(999)
-        .position({ bottom: '15vp', left: '15vp' })
-      Text(`${new Date(this.test_timestamp).toLocaleDateString()}`)
-        .position({ bottom: '40vp', right: '15vp' })
-        .onClick(() => {
-          this.onPageShow()
-        }).zIndex(999)
-      Scroll() {
-        GridRow() {
-          GridCol() {
-            Flex({ direction: FlexDirection.RowReverse}){
-              CommonButton({
-                label: $r('app.string.index_button_management')
+      Column() {
+        Flex({ direction: FlexDirection.RowReverse }) {
+          //top button
+          CommonButton({
+            label: $r('app.string.index_button_management')
+          })
+            .onClick(() => {
+              router.pushUrl({
+                url: 'pages/Management'
               })
-                .onClick(() => {
-                  router.pushUrl({
-                    url: 'pages/Management'
-                  })
-                })
-              CommonButton({
-                label: $r('app.string.index_button_new_memory')
+            })
+          //top button
+          CommonButton({
+            label: $r('app.string.index_button_new_memory')
+          })
+            .onClick(() => {
+              router.pushUrl({
+                url: 'pages/NewMemory'
               })
-                .onClick(() => {
-                  router.pushUrl({
-                    url: 'pages/NewMemory'
-                  })
-                })
-            }
-          }
-          .span(LARGE_GRID)
-          .backgroundColor($r('app.color.background'))
+            })
+        }
+        .backgroundColor($r('app.color.background'))
 
-          if(this.isDataLoaded){
-            if(!this.isDailyReviewSuccessful){
+        if (this.isDataLoaded) {
+          if (!this.isDailyReviewSuccessful) {
+            List() {
               ForEach(this.repetitions, (repetition: Repetition) => {
-                GridCol() {
+                ListItem() {
                   Text(`${this.memories?.get(repetition.MEMORY_ID)?.NAME}`)
                     .fontSize('20vp')
                     .fontWeight(FontWeight.Bold)
                     .fontColor(Color.White)
-                    .padding({ top: '20vp', bottom: '10vp'})
-                }.span(LARGE_GRID)
-                .border({width: {top: '2vp'}, color: $r('app.color.static') })
-                .padding({left: '20vp', right:'20vp'})
+                    .padding({ top: '20vp', bottom: '10vp' })
+                }
+                .width('100%')
+                .border({ width: { top: '2vp' }, color: $r('app.color.static') })
+                .padding({ left: '20vp', right: '20vp' })
                 .backgroundColor($r('app.color.dynamic'))
                 .onClick(() => {
                   router.pushUrl({
@@ -135,29 +121,44 @@ struct ExamplePage {
                   })
                 })
               }, (repetition: Repetition) => `${repetition.MEMORY_ID}`)
-            }else{
-              GridCol() {
-                Text($r('app.string.index_celebration_for_daily_review_success'))
-                  .fontSize('20vp')
-                  .fontWeight(FontWeight.Bold)
-                  .fontColor(Color.White)
-                  .padding({ top: '20vp', bottom: '10vp'})
-                  .onClick(() => {
-                    //maybe some animation for celebration
-                    logger.log(`${this.repetitions.length}`)
-                  })
-
-              }.span(LARGE_GRID)
-              .border({width: {top: '2vp'}, color: $r('app.color.static') })
-              .padding({left: '20vp', right:'20vp'})
-              .backgroundColor($r('app.color.dynamic'))
             }
+          } else {
+            Column() {
+              Text($r('app.string.index_celebration_for_daily_review_success'))
+                .fontSize('20vp')
+                .fontWeight(FontWeight.Bold)
+                .fontColor(Color.White)
+                .padding({ top: '20vp', bottom: '10vp' })
+                .onClick(() => {
+                  //maybe some animation for celebration
+                  logger.log(`${this.repetitions.length}`)
+                })
+
+            }
+            .border({ width: { top: '2vp' }, color: $r('app.color.static') })
+            .padding({ left: '20vp', right: '20vp' })
+            .backgroundColor($r('app.color.dynamic'))
           }
         }
-        .position({x:0, y:0})
-        .width('100%')
-        .height('100%')
       }
+      Flex() {
+        //bottom button
+        CommonButton({
+          label: "Test Date +1"
+        })
+          .onClick(() => {
+            logger.log('test date +1')
+            this.test_timestamp += 1000 * 60 * 60 * 24
+            this.onPageShow()
+          }).zIndex(999)
+          .position({ bottom: '15vp', left: '15vp' })
+        //bottom date
+        Text(`${new Date(this.test_timestamp).toLocaleDateString()}`)
+          .position({ bottom: '40vp', right: '15vp' })
+          .onClick(() => {
+            this.onPageShow()
+          }).zIndex(999)
+      }.position({y:'100%'})
     }
   }
 }
