@@ -80,17 +80,20 @@ class RepetitionManager{
     let repetition: Repetition = new Repetition(memory_id)
     return this.add_repetition(repetition)
   }
-  public async getRepetitions(predicates:relationalStore.RdbPredicates): Promise<Repetition[]>{
+  public async getRepetitions(predicates:relationalStore.RdbPredicates | string ): Promise<Repetition[]>{
     if (!this.rdbStore) return [];
 
     try{
       const repetitions: Repetition[] = [];
-      const resultSet = await this.rdbStore.query(predicates,
-        ['memory_id', 'last_viewed_timestamp', 'times_reviewed', 'next_review_timestamp', 'is_activated']);
+      let resultSet: relationalStore.ResultSet | null = null
+      if(predicates instanceof relationalStore.RdbPredicates){
+        resultSet = await this.rdbStore.query(predicates,
+          ['memory_id', 'last_viewed_timestamp', 'times_reviewed', 'next_review_timestamp', 'is_activated']);
+      }else{
+        resultSet = this.rdbStore.querySqlSync(predicates)
+      }
 
       while (resultSet.goToNextRow()) {
-
-
         let memory_id = resultSet.getDouble(resultSet.getColumnIndex('memory_id'));
         let repetition = new Repetition(memory_id)
         repetition.LAST_VIEWED_TIMESTAMP = resultSet.getDouble(resultSet.getColumnIndex('last_viewed_timestamp'));
@@ -128,13 +131,14 @@ class RepetitionManager{
     logger.log(`currentTimestamp = ${new Date(currentTimestamp).toISOString()}`)
     logger.log(`tomorrowMidNight = ${new Date(tomorrowMidnight).toISOString()}, ${tomorrowMidnight}`)
 
-    let predicate : relationalStore.RdbPredicates = rdbStoreProvider.createDateRangePredicates(REPETITION_TABLE, 'next_review_timestamp', 0, tomorrowMidnight)
-    predicate.orderByAsc('times_reviewed').orderByDesc('next_review_timestamp')
-    predicate = rdbStoreProvider.applyPaginationClauses(predicate, size, 0)
-
-    return this.getRepetitions(predicate)
+    //let predicate : relationalStore.RdbPredicates = rdbStoreProvider.createDateRangePredicates(REPETITION_TABLE, 'next_review_timestamp', 0, tomorrowMidnight)
+    //This line of code equals to predicate.orderByDesc('next_review_timestamp')
+    //predicate.orderByAsc('times_reviewed').orderByDesc('next_review_timestamp')
+    //predicate = rdbStoreProvider.applyPaginationClauses(predicate, size, 0)
+    //return this.getRepetitions(predicate)
+    let query = `SELECT * from ${REPETITION_TABLE} ORDER BY ${'times_reviewed'} Asc, ${'next_review_timestamp'} Desc LIMIT ${size} OFFSET ${0};`
+    return this.getRepetitions(query)
   }
-
   public async review(memory_id: number){
     if (!this.rdbStore){
       logger.log('rdbStore not found')

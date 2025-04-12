@@ -38,7 +38,6 @@ struct ExamplePage {
   @State isDailyReviewSuccessful: boolean = false
   @State daily_review_limit:number = 10
   onRepetitionUpdated(){
-    logger.log(`watch callback function is triggered, boolean = ${this.repetitions.length === 0}`)
     this.isDailyReviewSuccessful =  this.repetitions.length === 0
   }
   @State test_timestamp : number = Date.now()
@@ -110,13 +109,6 @@ struct ExamplePage {
                   })
                 })
             }
-          }
-          .span(LARGE_GRID)
-          .backgroundColor($r('app.color.background'))
-
-          //new memory button
-          GridCol() {
-
           }
           .span(LARGE_GRID)
           .backgroundColor($r('app.color.background'))
