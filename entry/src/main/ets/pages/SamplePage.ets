@@ -50,7 +50,7 @@ struct Index {
           this.message += "?"
           fetchMediaExample(this.uri)
           if(this.memory){
-            memoryManager.addMemory(this.memory)
+            memoryManager.insert(this.memory)
           }
           router.pushUrl({
             url: "pages/ResponsiveGridSystemSamplePage"
@@ -91,7 +91,7 @@ struct Index {
           hilog.info(DOMAIN, TAG, FORMAT, "what then2?")
           this.memory.IMAGES = uris
           hilog.info(DOMAIN, TAG, FORMAT, "what then?3")
-          let id = await memoryManager.addMemory(this.memory)
+          let id = await memoryManager.insert(this.memory)
           hilog.info(DOMAIN, TAG, FORMAT, "id: "+ id)
         })
         .backgroundColor(Color.Gray)

@@ -6,6 +6,7 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import {Logger} from '../../utils/Logger'
 import rdbStoreProvider from '../../database/RdbStoreProvider'
 import {DB_NAME} from '../../database/RdbStoreProvider'
+import { REPETITION_TABLE } from '../repetition/RepetitionManager';
 
 const DOMAIN = 0x0000;
 const TAG = "crud"
@@ -60,7 +61,40 @@ class MemoryManager{
     }
   }
 
-  public async addMemory(memory: Memory){
+  public async update(memory: Memory){
+    console.log("update")
+    if (!this.rdbStore){
+      log('rdbStore not found')
+      return
+    }
+    const valueBucket: relationalStore.ValuesBucket = {
+      'ID': memory.ID,
+      'NAME': memory.NAME,
+      'DATE': memory.DATE,
+      'DESCRIPTION': memory.DESCRIPTION,
+      'IS_ENABLED': memory.IS_ENABLED ? 1 : 0
+    };
+    try {
+      await this.rdbStore.beginTransaction()
+      await this.rdbStore.update(valueBucket, new relationalStore.RdbPredicates(MEMORY_TABLE).in('memory_id', [memory.ID]));
+
+      for (const imageUri of memory.IMAGES) {
+        const imageBucket: relationalStore.ValuesBucket = {
+          'MEMORY_ID': memory.ID,
+          'IMAGE_URI': imageUri
+        };
+        await this.rdbStore.insert(IMAGE_TABLE, imageBucket);
+      }
+
+      await this.rdbStore.commit();
+      console.log(`Successfully updated memory with id: ${memory.ID}`)
+      return;
+    } catch (err) {
+      log(`Add memory failed`, err);
+      return;
+    }
+  }
+  public async insert(memory: Memory){
     if (!this.rdbStore){
       log('rdbStore not found')
       return -1

@@ -48,6 +48,10 @@
     },{
       "name": "common_button_details",
       "value": "详情"
+    },{
+      "name": "common_button_edit",
+      "value": "编辑"
     }
+
   ]
 }

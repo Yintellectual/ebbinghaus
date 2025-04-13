@@ -48,6 +48,9 @@
     },{
       "name": "common_button_details",
       "value": "Details"
+    },{
+      "name": "common_button_edit",
+      "value": "Edit"
     }
   ]
 }
