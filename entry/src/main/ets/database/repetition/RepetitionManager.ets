@@ -136,7 +136,9 @@ class RepetitionManager{
     //predicate.orderByAsc('times_reviewed').orderByDesc('next_review_timestamp')
     //predicate = rdbStoreProvider.applyPaginationClauses(predicate, size, 0)
     //return this.getRepetitions(predicate)
-    let query = `SELECT * from ${REPETITION_TABLE} ORDER BY ${'times_reviewed'} Asc, ${'next_review_timestamp'} Desc LIMIT ${size} OFFSET ${0};`
+    let query = `SELECT * from ${REPETITION_TABLE}
+     WHERE ${'next_review_timestamp'} < ${tomorrowMidnight}
+     ORDER BY ${'times_reviewed'} Asc, ${'next_review_timestamp'} Desc LIMIT ${size} OFFSET ${0};`
     return this.getRepetitions(query)
   }
   public async review(memory_id: number){
