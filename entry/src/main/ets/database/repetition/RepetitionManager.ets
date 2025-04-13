@@ -31,7 +31,7 @@ class RepetitionManager{
   private rdbStore: relationalStore.RdbStore | null = null
   public async init(){
     this.rdbStore = rdbStoreProvider.getRdbStore()
-    logger.log(`Succeeded in getting RdbStore::${DB_NAME}`)
+    //logger.log(`Succeeded in getting RdbStore::${DB_NAME}`)
     try{
       await this.rdbStore.executeSql(
         `CREATE TABLE IF NOT EXISTS ${REPETITION_TABLE} (
@@ -42,20 +42,20 @@ class RepetitionManager{
           is_activated INTEGER NOT NULL DEFAULT 1,
           FOREIGN KEY (memory_id) REFERENCES ${MEMORY_TABLE}(ID) ON DELETE CASCADE
         )`);
-      logger.log(`Succeeded in initializing ${REPETITION_TABLE}`)
+      //logger.log(`Succeeded in initializing ${REPETITION_TABLE}`)
       await this.rdbStore.executeSql(
         `CREATE INDEX IF NOT EXISTS IDX_REPETITION_NEXT_REVIEW
           ON ${REPETITION_TABLE}(next_review_timestamp)`
       )
-      logger.log(`Succeeded in initializing RepetitionManager`)
+      //logger.log(`Succeeded in initializing RepetitionManager`)
     } catch (err) {
-      logger.log("Database init failed:", err)
+      //logger.log("Database init failed:", err)
     }
   }
 
   public async add_repetition(repetition: Repetition): Promise<number>{
     if (!this.rdbStore){
-      logger.log('rdbStore not found')
+      //logger.log('rdbStore not found')
       return -1
     }
     const valueBucket: relationalStore.ValuesBucket = {
@@ -69,10 +69,10 @@ class RepetitionManager{
       await this.rdbStore.beginTransaction()
       const memory_id = await this.rdbStore.insert(REPETITION_TABLE, valueBucket);
       await this.rdbStore.commit();
-      logger.log(`Successfully inserted repetition with id: ${memory_id}}`)
+      //logger.log(`Successfully inserted repetition with id: ${memory_id}}`)
       return memory_id
     }catch (err) {
-      logger.log(`add_repetition failed`, err);
+      //logger.log(`add_repetition failed`, err);
       return -1;
     }
   }
@@ -102,13 +102,13 @@ class RepetitionManager{
         repetition.IS_ACTIVATED = resultSet.getDouble(resultSet.getColumnIndex('is_activated')) === 1;
 
         repetitions.push(repetition);
-        logger.log(`${repetition}`)
+        //logger.log(`${repetition}`)
       }
       resultSet.close()
-      logger.log(`Found ${repetitions.length} repetitions`)
+      //logger.log(`Found ${repetitions.length} repetitions`)
       return repetitions
     } catch (err) {
-      logger.log(`Query failed: ${(err as BusinessError).message}`, err);
+      //logger.log(`Query failed: ${(err as BusinessError).message}`, err);
       return [];
     }
   }
@@ -120,7 +120,7 @@ class RepetitionManager{
     current_local.setUTCHours(0)
     const midnight_local = current_local
     const tomorrow_midnight_local = midnight_local.getTime() + 24*60*60*1000
-    logger.log(`tomorrow_midnight_local = ${new Date(tomorrow_midnight_local).toISOString()}`)
+    //logger.log(`tomorrow_midnight_local = ${new Date(tomorrow_midnight_local).toISOString()}`)
     let tomorrow_midnight_local_utc = timezone_to_utc(TIMEZONE_OFFSET, tomorrow_midnight_local);
     return tomorrow_midnight_local_utc
   }
@@ -128,8 +128,8 @@ class RepetitionManager{
   public async getRepetitionsToReview(currentTimestamp: number, size: number){
     let tomorrowMidnight : number
       = this.getTomorrowMidnightTimestamp(currentTimestamp)
-    logger.log(`currentTimestamp = ${new Date(currentTimestamp).toISOString()}`)
-    logger.log(`tomorrowMidNight = ${new Date(tomorrowMidnight).toISOString()}, ${tomorrowMidnight}`)
+    //logger.log(`currentTimestamp = ${new Date(currentTimestamp).toISOString()}`)
+    //logger.log(`tomorrowMidNight = ${new Date(tomorrowMidnight).toISOString()}, ${tomorrowMidnight}`)
 
     //let predicate : relationalStore.RdbPredicates = rdbStoreProvider.createDateRangePredicates(REPETITION_TABLE, 'next_review_timestamp', 0, tomorrowMidnight)
     //This line of code equals to predicate.orderByDesc('next_review_timestamp')
@@ -141,7 +141,7 @@ class RepetitionManager{
   }
   public async review(memory_id: number){
     if (!this.rdbStore){
-      logger.log('rdbStore not found')
+      //logger.log('rdbStore not found')
       return
     }
     let repetitions = await this.getRepetitions(new relationalStore.RdbPredicates(REPETITION_TABLE).in('memory_id', [memory_id]))

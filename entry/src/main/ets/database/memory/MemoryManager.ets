@@ -13,7 +13,7 @@ const FORMAT = '%{public}s'
 const logger = new Logger(DOMAIN, TAG, FORMAT)
 
 function log(message:string, err?:BusinessError){
-  logger.log(message, err)
+  //logger.log(message, err)
 }
 
 export const MEMORY_TABLE = 'MEMORY';

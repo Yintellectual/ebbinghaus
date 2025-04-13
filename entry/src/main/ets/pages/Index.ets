@@ -43,6 +43,7 @@ struct ExamplePage {
   @State test_timestamp : number = Date.now()
   private memories: HashMap<number, Memory> = new HashMap()
   @State isDataLoaded: boolean = false
+
   async onPageShow(): Promise<void> {
     //let timeInterval = getTimeInterval(0)
     //let memories = await memoryManager.getMemoriesByDate(timeInterval.start, timeInterval.end)
@@ -141,7 +142,7 @@ struct ExamplePage {
           }
         }
       }
-      Flex() {
+      Flex({direction:FlexDirection.RowReverse, alignItems:ItemAlign.Center}) {
         //bottom button
         CommonButton({
           label: "Test Date +1"
@@ -150,15 +151,13 @@ struct ExamplePage {
             logger.log('test date +1')
             this.test_timestamp += 1000 * 60 * 60 * 24
             this.onPageShow()
-          }).zIndex(999)
-          .position({ bottom: '15vp', left: '15vp' })
+          })
         //bottom date
-        Text(`${new Date(this.test_timestamp).toLocaleDateString()}`)
-          .position({ bottom: '40vp', right: '15vp' })
+        Text(`Test Date:[${new Date(this.test_timestamp).toLocaleDateString()}]`)
           .onClick(() => {
             this.onPageShow()
-          }).zIndex(999)
-      }.position({y:'100%'})
+          }).textAlign(TextAlign.Center)
+      }.position({y:'90%'})
     }
   }
 }
