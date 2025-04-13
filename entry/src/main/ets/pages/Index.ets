@@ -41,7 +41,7 @@ struct ExamplePage {
     this.isDailyReviewSuccessful =  this.repetitions.length === 0
   }
   @State test_timestamp : number = Date.now()
-  private memories: HashMap<number, Memory> = new HashMap()
+  @State memories: HashMap<number, Memory> = new HashMap()
   @State isDataLoaded: boolean = false
 
   async onPageShow(): Promise<void> {

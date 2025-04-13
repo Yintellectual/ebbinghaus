@@ -61,32 +61,33 @@ class MemoryManager{
     }
   }
 
-  public async update(memory: Memory){
-    console.log("update")
+  public updateSync(memory: Memory){
+    console.log("MemoryManager: updateSync")
     if (!this.rdbStore){
       log('rdbStore not found')
       return
     }
     const valueBucket: relationalStore.ValuesBucket = {
-      'ID': memory.ID,
       'NAME': memory.NAME,
       'DATE': memory.DATE,
       'DESCRIPTION': memory.DESCRIPTION,
       'IS_ENABLED': memory.IS_ENABLED ? 1 : 0
     };
     try {
-      await this.rdbStore.beginTransaction()
-      await this.rdbStore.update(valueBucket, new relationalStore.RdbPredicates(MEMORY_TABLE).in('memory_id', [memory.ID]));
+      //update sync memory
+      this.rdbStore.updateSync(
+        valueBucket,
+        new relationalStore.RdbPredicates(MEMORY_TABLE).in('ID', [memory.ID]));
+
+      this.delete_sync_images_by_memory_id(memory.ID)
 
       for (const imageUri of memory.IMAGES) {
         const imageBucket: relationalStore.ValuesBucket = {
           'MEMORY_ID': memory.ID,
           'IMAGE_URI': imageUri
         };
-        await this.rdbStore.insert(IMAGE_TABLE, imageBucket);
+        this.rdbStore.insertSync(IMAGE_TABLE, imageBucket);
       }
-
-      await this.rdbStore.commit();
       console.log(`Successfully updated memory with id: ${memory.ID}`)
       return;
     } catch (err) {
@@ -170,7 +171,10 @@ class MemoryManager{
   public async getMemoriesByID(ids: number[]){
     return this.getMemories(new relationalStore.RdbPredicates(MEMORY_TABLE).in('ID', ids))
   }
-
+  public delete_sync_images_by_memory_id(memory_id:number){
+    let images_by_memory_id = new relationalStore.RdbPredicates(IMAGE_TABLE).in('MEMORY_ID', [memory_id])
+    this.rdbStore?.deleteSync(images_by_memory_id)
+  }
   public async delete(memory_id: number){
     this.deleteImages
     this.delete_memory(memory_id)

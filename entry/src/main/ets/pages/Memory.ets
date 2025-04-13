@@ -43,7 +43,7 @@ function pick_pictures(): Promise<Array<string>> {
 @Entry
 @Component
 struct MemoryDisplayPage {
-  private memory: Memory | null = null;
+  @State memory: Memory | null = null;
   private context = getContext() as common.UIAbilityContext
   @State name: string = ""
   @State uris: string[] = []
@@ -71,12 +71,7 @@ struct MemoryDisplayPage {
       let memory_id = await memoryManager.insert(mmr)
       await repetitionManager.add_repetition_by_memory_id(memory_id)
     }else{
-      mmr.IMAGES.filter((image)=>{!this.memory?.IMAGES.includes(image)})
-      await memoryManager.update(mmr)
-      if(this.memory) {
-        console.log(this.memory.toString());
-      }
-      console.log(mmr.toString());
+      memoryManager.updateSync(mmr)
     }
 
     this.isEdit = false
@@ -93,7 +88,7 @@ struct MemoryDisplayPage {
       this.memory = sample
     }
     if(this.memory?.IMAGES){
-      this.images = this.memory.IMAGES
+      this.images = this.memory.IMAGES.slice()
     }
     if(this.memory){
       this.name = this.memory.NAME
@@ -135,19 +130,18 @@ struct MemoryDisplayPage {
               })
               .fontSize('32fp')
               .fontWeight('bold')
-              .textAlign(TextAlign.Center)
               .padding({ top: '10vp', bottom: '10vp' })
           }else {
             Text(this.name)
               .fontSize('32fp')
               .fontWeight('bold')
-              .textAlign(TextAlign.Center)
               .padding({ top: '10vp', bottom: '10vp' })
           }
         }
         .backgroundColor($r('app.color.background'))
         .border({ width: { top: '1vp' }, color: { top: $r('app.color.static') } })
         .width('100%')
+        .justifyContent(FlexAlign.Center)
         //uris in description
         if(this.uris) {
           Row() {
@@ -173,7 +167,6 @@ struct MemoryDisplayPage {
             if(this.description){
               ListItem() {
                 if(this.isEdit){
-
                   TextArea({ text: this.description })
                     .fontSize('18fp')
                     .lineHeight('24fp')
@@ -193,6 +186,8 @@ struct MemoryDisplayPage {
                   }
                 }
               }
+              .width('100%')
+              .padding({left:'5vp', right:'5vp'})
               .backgroundColor($r('app.color.background'))
               .border({ width: { top: '1vp' }, color: { top: $r('app.color.static') } })
             }
